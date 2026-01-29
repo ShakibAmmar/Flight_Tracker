@@ -1,0 +1,90 @@
+.footer {
+  background-color: #f3f4f6;
+  border-top: 1px solid #e5e7eb;
+  padding: 32px 0;
+}
+
+.footer-container {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 32px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-heading {
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 12px;
+}
+
+.footer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-list li {
+  margin-bottom: 8px;
+}
+
+.footer-link {
+  color: #6b7280;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-link:hover {
+  color: #2563eb;
+}
+
+.footer-copyright {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #d1d5db;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+}
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+  .footer {
+    padding: 24px 0; /* Slightly less padding on mobile */
+  }
+
+  .footer-container {
+    padding: 0 20px; /* Ensures the content doesn't touch the screen edges */
+    width: 100%;     /* Forces container to stay within the viewport */
+    box-sizing: border-box; /* Includes padding in the width calculation */
+  }
+
+  .footer-grid {
+    /* On small screens, we stack columns or show 2 per row */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+    gap: 24px;
+    text-align: left; /* Ensures text stays left-aligned on mobile */
+    padding-left: 11px;
+  }
+
+  .footer-column {
+    align-items: flex-start; /* Keeps links aligned to the left */
+  }
+
+  .footer-copyright {
+    margin-top: 24px;
+    padding-top: 16px;
+    font-size: 12px; /* Smaller text for smaller screens */
+  }
+}

@@ -1,0 +1,140 @@
+/* Ensure the wrapper covers the area */
+.sort-container {
+  position: relative;
+  width: 100%;
+  max-width: 250px;
+  
+}
+
+/* Updated Trigger Styling */
+.dropdown-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px; /* Adjusted to match filter height */
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 48px; /* Fixed height to match Filter button */
+}
+
+.dropdown-trigger.active {
+  border-color: #3b82f6;
+}
+.trigger-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.trigger-label {
+  font-size: 12px;
+  color: #1c2128;
+}
+
+.trigger-sub {
+  font-size: 11px;
+  color: #3b414b;
+}
+
+.chevron {
+  transition: transform 0.4s ease;
+  color: #64748b;
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.sort-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+   box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  z-index: 150; /* Higher than filter if they overlap */
+  margin-top: 5px;
+ 
+}
+/* The invisible "Bridge" to prevent flickering */
+.sort-menu::before {
+  content: '';
+  position: absolute;
+  top: -10px; /* Connects the menu to the button */
+  left: 0;
+  width: 100%;
+  height: 10px;
+}
+@media (max-width: 768px) {
+  .filter-dropdown-menu, .sort-menu {
+    position: fixed; /* Switch to fixed on mobile for better positioning */
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    margin-top: 0;
+    border-radius: 20px 20px 0 0; /* "Drawer" style look */
+    animation: slideUp 0.3s ease-out;
+  }
+
+  /* Prevent the hover "bridge" from interfering on mobile */
+  .filter-dropdown-menu::before, .sort-menu::before {
+    display: none;
+  }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+
+.menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
+}
+
+.menu-item:hover {
+  background: #f8fafc;
+}
+
+.menu-item.active {
+  background: #eff6ff;
+  border-left: 4px solid #3b82f6;
+}
+
+.menu-icon {
+  margin-right: 12px;
+  color: #3b82f6;
+}
+
+.menu-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-label {
+  font-weight: 600;
+  font-size: 12px;
+  color: #1e293b;
+}
+
+.menu-sub {
+  font-size: 12px;
+  color: #64748b;
+}

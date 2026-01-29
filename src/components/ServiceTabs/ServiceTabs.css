@@ -1,0 +1,114 @@
+.service-tabs-container {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9); /* Glassmorphism effect */
+  backdrop-filter: blur(10px);
+  border-radius: 16px 16px 0 0;
+  padding: 6px 10px;
+  box-shadow: 0 100px 500px rgba(255, 255, 255, 0.15), 0 1px 6px rgba(48, 50, 49, 0.804);
+  overflow-x: auto;
+  height: 95px;
+ 
+}
+
+/* Hide scrollbar */
+.service-tabs-container::-webkit-scrollbar { display: none; overflow-y: hidden;}
+
+.service-tabs {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  min-width: max-content; 
+
+   
+}
+
+.service-tab {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.service-tab:hover {
+  transform: translateY(-3px);
+}
+
+.service-icon-wrapper {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc;
+  color: var(--brand-color);
+   box-shadow: 0 100px 500px rgba(255, 255, 255, 0.15), 0 3px 9px rgb(117, 135, 174);
+  margin-bottom: 8px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.service-tab:hover .service-icon-wrapper,
+.service-tab.active .service-icon-wrapper {
+  background: var(--brand-color);
+  color: white;
+  
+}
+
+.service-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #f43f5e;
+  color: white;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  border: 2px solid white;
+}
+
+.service-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.service-tab.active .service-label {
+  color: #1e293b;
+}
+
+.active-underline {
+  position: absolute;
+  bottom: -15px;
+  width: 100%;
+  height: 3px;
+  background: var(--brand-color);
+  border-radius: 3px 3px 0 0;
+}
+/* The Pulse Animation */
+@keyframes livePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(88, 44, 190); /* Uses your purple color */
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(139, 92, 246, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
+  }
+}
+
+/* Apply it specifically to the Live Location icon wrapper */
+/* Find the icon with the color '#8b5cf6' (purple) */
+.service-tab:nth-child(2) .service-icon-wrapper {
+  animation: livePulse 2s infinite;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}

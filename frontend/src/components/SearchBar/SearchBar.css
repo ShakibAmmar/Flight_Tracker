@@ -1,0 +1,383 @@
+.search-bar-container-new {
+  background-image: linear-gradient(20deg,#000000 , #15457b, #000000);
+
+  padding: 2px 0;
+  position: relative;
+  background-position : center;
+ 
+  z-index: 500;
+
+}
+
+.search-bar-new {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2px 3px;
+  
+}
+
+.flight-status-card-search {
+  background-color: linear-gradient(0deg, #15457b, #051423);
+  border-radius: 12px;
+  padding: 25px ;
+  margin: 30px;
+ box-shadow: 0 100px 500px  rgba(255, 255, 255, 0.15), 3px 2px 6px rgb(0, 0, 0);
+ 
+}
+
+.card-title-search {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 24px;
+}
+
+.search-type-toggle-new {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 24px;
+}
+
+.radio-label-new {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.radio-label-new input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.radio-label-new span {
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.search-form-new {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.form-field-new {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+ z-index: auto;
+}
+
+.airport-field-new {
+  grid-column: span 2;
+}
+
+.field-label-new {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #006eff;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  z-index: 1;
+}
+
+.field-input-new {
+  width: 100%;
+  background-color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 16px;
+  color: #000000;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.field-input-new:focus {
+  outline: 3px solid #0054da;
+  background-color: #ffffff;
+}
+
+/* Autocomplete Styles */
+.autocomplete-wrapper-new {
+  position: relative;
+  z-index: 10;
+}
+
+.autocomplete-wrapper-new .field-input-new {
+  padding-right: 40px;
+}
+
+.dropdown-icon-new {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.autocomplete-dropdown-new {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  max-height: 250px;
+  overflow-y: auto;
+  z-index:9999;
+  animation: slideDown 0.2s ease-out;
+}
+
+.autocomplete-item-new {
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 14px;
+  color: #374151;
+  
+}
+
+.autocomplete-item-new:hover:not(.disabled) {
+  background-color: #f3f4f6;
+}
+
+.autocomplete-item-new.disabled {
+  color: #9ca3af;
+  cursor: default;
+  font-style: italic;
+  font-size: 13px;
+}
+
+/* Date Picker Styles */
+.date-picker-wrapper-new {
+  position: relative;
+}
+
+.date-display-new {
+   margin-bottom: 18px;
+  margin-top: 0px;
+  height: 70%;
+  width: 100%;
+  background-color: #f5f5f5;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.date-display-new:hover {
+  background-color: #e5e7eb;
+}
+
+.date-text-new {
+  font-size: 15px;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.day-text-new {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Calendar Dropdown */
+.calendar-dropdown-new {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  z-index: 1000;
+  min-width: 320px;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.calendar-header-new {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.calendar-month-new {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.calendar-nav-btn-new {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  color: #6b7280;
+}
+
+.calendar-nav-btn-new:hover {
+  background-color: #f3f4f6;
+  color: #1f2937;
+}
+
+.calendar-grid-new {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendar-day-header-new {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  padding: 8px;
+}
+
+.calendar-day-new {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s;
+  color: #374151;
+  font-weight: 500;
+}
+
+.calendar-day-new:not(.empty):hover {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.calendar-day-new.selected {
+  background-color: #2563eb;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.calendar-day-new.empty {
+  cursor: default;
+}
+
+.search-btn-wrapper-new {
+  display: flex;
+  align-items: flex-end;
+}
+
+.search-btn-new {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(to right, #53b2fe, #065af3);
+  color: #ffffff;
+  font-weight: bold;
+  padding: 12px 32px;
+  border-radius: 25px;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  border: none;
+  cursor: pointer;
+   box-shadow: 0 100px 500px  rgba(255, 255, 255, 0.15), 0 4px 8px rgba(1, 24, 8, 0.804);
+  transition: all 0.3s;
+  margin-top: 21px;
+ 
+}
+
+.search-btn-new:hover {
+box-shadow: 0 3px 6px rgba(0, 0, 0, 0);
+  transform: translateY(-3px);
+  background: #1d81d8;
+}
+
+@media (max-width: 768px) {
+  .search-bar-new {
+    padding: 0 16px;
+  }
+
+  .flight-status-card-search {
+    padding: 20px;
+  }
+
+  .search-form-new {
+    grid-template-columns: 1fr;
+  }
+  
+  .airport-field-new {
+    grid-column: span 1;
+  }
+
+  .calendar-dropdown-new {
+    min-width: 280px;
+    padding: 16px;
+  }
+}
+/* Add to SearchBar.css */
+/* Shake Animation */
+.field-shake {
+ animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes input-vibrate {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+/* Error Labels Row */
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+/* Red Error Tag */
+.error-tag {
+  background-color: #ffebee;
+  color: #d32f2f;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  border: 1px solid #ffcdd2;
+}
+
+/* Red Input Border */
+.input-error {
+  border: 1.5px solid #d32f2f !important;
+  background-color: #fff8f8 !important;
+}

@@ -1,0 +1,325 @@
+/* --- CORE HEADER STYLES --- */
+.header {
+  background-color: #ffffff;
+  color: #333;
+  padding: 1px 2px;
+  border-bottom: 1px solid #eee;
+}
+
+.header-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 14px 0px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.header-actions{
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+/* --- LOGO SECTION --- */
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 7px;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.logo:hover {
+  transform: translateY(-1px);
+}
+
+.logo-flight { color: #bc4747; }
+.logo-tracker { color: #ef721e; }
+
+
+/* --- BUTTON & ACTION STYLES --- */
+.home-icon-btn, 
+.login-btn, 
+.lang-btn {
+  background: linear-gradient(to right, rgb(83, 178, 254), rgb(6, 90, 243));
+  color: #ffffff;
+  padding: 8px 24px;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 100px 500px  rgba(255, 255, 255, 0.15), 0 4px 5px rgba(1, 24, 8, 0.804);
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-icon-btn:hover, 
+.login-btn:hover, 
+.lang-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* --- USER AUTHENTICATED STATE --- */
+.user-nav-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(to right, rgb(83, 178, 254), rgb(6, 90, 243));
+  padding: 0 12px; /* Remove vertical padding, use height instead */
+  border-radius: 9999px; /* Match the pill shape of other buttons */
+  height: 38px; /* Standardize height with .login-btn */
+  box-shadow: 0 3px 5px rgba(1, 24, 8, 0.2);
+  border: none;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white !important; /* Forces text to stay white on the blue background */
+}
+
+.user-name-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: white;
+}
+
+.logout-icon-btn {
+  background: #ff5252;
+  color: white;
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.logout-icon-btn:hover {
+  background: #ff1717;
+  transform: scale(1.1);
+}
+
+/* --- MEGA MENU & DROPDOWNS --- */
+.lang-dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.lang-btn {
+  gap: 12px;
+  min-width: 110px;
+}
+
+.button-flag {
+  width: 22px;
+  height: auto;
+  border-radius: 2px;
+}
+
+.divider-line {
+  opacity: 0.6;
+  margin: 0 2px;
+}
+
+.currency-display {
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+}
+/* 2. Flags inside the Dropdown Menu Grid */
+.flag-icon {
+  width: 24px !important;   /* Slightly larger for the list */
+  height: 16px !important;
+  object-fit: cover;
+  border-radius: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.mega-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 1px;
+  width: 400px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  display: flex;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.menu-section { flex: 1; }
+
+.menu-section h4 {
+  color: #666;
+  font-size: 11px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+.menu-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #333;
+  font-size: 13px;
+  transition: background 0.2s;
+}
+
+.menu-item:hover { background-color: #f0f7ff; }
+
+.menu-item.active {
+  background-color: #e8f0fe;
+  color: #065af3;
+  font-weight: bold;
+}
+
+.divider {
+  width: 1px;
+  background-color: #eee;
+  margin: 0 15px;
+}
+
+.arrow {
+  transition: transform 0.3s;
+}
+.mobile-home-icon {
+    display: none;
+  }
+.rotate { transform: rotate(180deg); }
+
+/* --- RESPONSIVE --- */
+/* --- IMPROVED RESPONSIVE HEADER --- */
+/* --- FULL RESPONSIVE FIX FOR HEADER & MEGA MENU --- */
+@media (max-width: 768px) {
+  /* 1. Header Container Adjustments */
+  .header-container {
+    padding: 8px 12px; /* Tighten padding as seen in iPhone SE view */
+  }
+
+  .header-content {
+    justify-content: space-between;
+    gap: 4px;
+  }
+  .mobile-home-icon {
+    display: flex;
+  }
+
+  /* 2. Button Alignment & Text Hiding */
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px; /* Tight gap to keep all 3 buttons on one line */
+  }
+
+  /* Hide labels to prevent the stacking seen in the Tablet screenshot */
+  .home-icon-btn span, 
+  .user-name-text, 
+  .lang-btn .divider-line {
+    display: none !important;
+  }
+
+  /* Standardize heights for all header elements */
+  .home-icon-btn, 
+  .login-btn, 
+  .lang-btn, 
+  .user-nav-profile {
+    height: 34px; 
+    padding: 0 10px;
+    font-size: 11px;
+    min-width: auto;
+  }
+
+  .user-nav-profile {
+    gap: 4px;
+  }
+
+  /* 3. Mega Menu Viewport Fix (Prevents the overflow in image_18d6e1) */
+  .mega-menu {
+    position: fixed; /* Anchors it to the screen, not the button */
+    top: 41px;
+    left: 2.5%;
+    right: 2.5%;
+    width: 95vw;
+    max-width: none;
+    flex-direction: row; /* Keeps your divider layout side-by-side */
+    padding: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    z-index: 1001;
+  }
+
+  .mega-menu .divider {
+    display: block;
+    margin: 0 8px;
+  }
+
+  .menu-section h4 {
+    font-size: 10px;
+    margin-bottom: 10px;
+  }
+
+  /* 4. Menu Item Optimization */
+  .menu-grid {
+    max-height: 50vh; /* Allows scrolling inside the menu sections */
+    overflow-y: auto;
+  }
+
+  .menu-item {
+    padding: 8px 4px;
+    font-size: 11px;
+    gap: 6px;
+  }
+
+  .menu-item .flag-icon {
+    width: 18px !important;
+    height: 12px !important;
+  }
+}
+
+/* Extra Small Screens Fix */
+@media (max-width: 480px) {
+  .logo {
+    font-size: 16px;
+  }
+  
+  /* Ensure the buttons don't overlap the logo */
+  .header-left {
+    flex-shrink: 1;
+  }
+}

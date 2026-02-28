@@ -27,12 +27,18 @@ function SearchResultsPage({ searchData: initialSearchData, onBack,setIsLoginOpe
 const fetchFlights = useCallback(async (searchData) => {
   setIsLoading(true);
   setHasError(false);
+  // --- ADDED: Timeout Controller (60 seconds) ---
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 60000);
 
   try {
     const flightNoInput = searchData.flightNumber.toUpperCase();
 
     // 1. Call your Express backend scraper endpoint
-    const response = await fetch(`http://localhost:5000/api/flight-tracker/${flightNoInput}`);
+const response = await fetch(`http://localhost:5000/api/flight-tracker/${flightNoInput}`, {
+      signal: controller.signal // Link the timeout to this fetch
+    });
+    clearTimeout(timeoutId);
     
     if (!response.ok) throw new Error("Server responded with an error");
     
@@ -78,8 +84,12 @@ const fetchFlights = useCallback(async (searchData) => {
       // If no data found by scraper, set empty list
       setFlights([]);
     }
-  } catch (err) {
-    console.error("Scraper Fetch Error:", err);
+ } catch (err) {
+    if (err.name === 'AbortError') {
+      console.error("Fetch timed out after 60 seconds");
+    } else {
+      console.error("Scraper Fetch Error:", err);
+    }
     setHasError(true);
   } finally {
     setIsLoading(false);

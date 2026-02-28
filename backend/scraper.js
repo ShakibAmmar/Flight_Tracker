@@ -15,6 +15,7 @@ const Review = mongoose.models.Review || mongoose.model('Review', new mongoose.S
     seatComfort: String,
     cabinService: String,
     groundService: String,
+    aircraftNumber:String,
     valueMoney: String,
     scrapedAt: { type: Date, default: Date.now }
 }));
@@ -82,6 +83,7 @@ async function runScraper(airlineName) {
                         seatComfort: getTableData("Seat Comfort"),
                         cabinService: getTableData("Cabin Staff Service"),
                         groundService: getTableData("Ground Service"),
+                        aircraftNumber: getTableData("Aircraft"),
                         valueMoney: getTableData("Value For Money")
                     };
                 });

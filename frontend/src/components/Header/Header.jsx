@@ -139,7 +139,7 @@ function Header() {
                 onMouseEnter={() => setIsMenuOpen(true)}
                 onMouseLeave={() => setIsMenuOpen(false)}
               >
-                {/* <button className="lang-btn">
+                <button className="lang-btn">
                   <Flag code={selectedLang.code} className="button-flag" />
                   <span className="divider-line">|</span>
                   <span className="currency-display">
@@ -149,7 +149,7 @@ function Header() {
                     size={12}
                     className={`arrow ${isMenuOpen ? "rotate" : ""}`}
                   />
-                </button> */}
+                </button>
 
                 {isMenuOpen && (
                   <div className="mega-menu">

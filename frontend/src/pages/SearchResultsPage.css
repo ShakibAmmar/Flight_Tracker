@@ -382,15 +382,23 @@
 }
 
 .back-search-btn {
-  background: linear-gradient(to right, rgb(83, 178, 254), rgb(6, 90, 243));
+  background: linear-gradient(
+    -45deg, 
+    #2852fc 25%, 
+    #0aa1ff 50%, 
+    #2648f4 75%
+  );
+  background-size: 400% 400%;
   color: #ffffff;
-  border: 2px;
-  padding: 10px 24px;
-  border-radius: 8px;
+  padding: 8px 24px;
+  border-radius: 9999px;
+  font-size: 14px;
   font-weight: 600;
+  border: none;
   cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 200px 500px  rgba(255, 255, 255, 0.15), 0 2px 4px rgba(0, 3, 1, 0.797);
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+  animation: liquidGradient 8s ease infinite, simmerVibe 4s ease-in-out infinite;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .back-search-btn:hover {

@@ -1,33 +1,59 @@
+/* --- MODERN STYLISH FOOTER --- */
 .footer {
-  background-color: #f3f4f6;
-  border-top: 1px solid #e5e7eb;
-  padding: 32px 0;
+  /* Using a dark, premium theme to contrast with the light header */
+  background: linear-gradient(180deg, #111827 0%, #030712 100%);
+  color: #9ca3af;
+  padding: 80px 0 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle background glow to match your "Spark" effect */
+.footer::before {
+  content: "";
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .footer-container {
-  max-width: 1280px;
-  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
 }
 
 .footer-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 32px;
-  font-size: 14px;
-  color: #6b7280;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 48px;
 }
 
-.footer-column {
-  display: flex;
-  flex-direction: column;
-}
-
+/* --- COLUMN STYLING --- */
 .footer-heading {
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  position: relative;
+  display: inline-block;
+}
+
+/* Stylish underline for headings */
+.footer-heading::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(to right, #2563eb, #60a5fa);
+  border-radius: 2px;
 }
 
 .footer-list {
@@ -37,54 +63,72 @@
 }
 
 .footer-list li {
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
+/* --- INTERACTIVE LINKS --- */
 .footer-link {
-  color: #6b7280;
+  color: #9ca3af;
   text-decoration: none;
-  transition: color 0.3s;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
 }
 
 .footer-link:hover {
+  color: #60a5fa;
+  transform: translateX(5px); /* Smooth slide effect */
+}
+
+/* Adding a tiny dot before the link on hover */
+.footer-link:hover::before {
+  content: "→";
+  margin-right: 8px;
+  font-size: 12px;
   color: #2563eb;
 }
 
+/* --- COPYRIGHT SECTION --- */
 .footer-copyright {
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid #d1d5db;
+  margin-top: 60px;
+  padding-top: 30px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
   text-align: center;
-  color: #9ca3af;
-  font-size: 14px;
+  font-size: 13px;
+  color: #6b7280;
+  letter-spacing: 0.5px;
 }
-/* Mobile Responsive Adjustments */
+
+/* --- RESPONSIVE ADJUSTMENTS --- */
 @media (max-width: 768px) {
   .footer {
-    padding: 24px 0; /* Slightly less padding on mobile */
-  }
-
-  .footer-container {
-    padding: 0 20px; /* Ensures the content doesn't touch the screen edges */
-    width: 100%;     /* Forces container to stay within the viewport */
-    box-sizing: border-box; /* Includes padding in the width calculation */
+    padding: 60px 0 30px;
   }
 
   .footer-grid {
-    /* On small screens, we stack columns or show 2 per row */
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
-    gap: 24px;
-    text-align: left; /* Ensures text stays left-aligned on mobile */
-    padding-left: 11px;
+    grid-template-columns: repeat(2, 1fr); /* 2x2 grid on tablets */
+    gap: 32px;
+    padding-left: 0;
   }
 
-  .footer-column {
-    align-items: flex-start; /* Keeps links aligned to the left */
+  .footer-heading {
+    margin-bottom: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-grid {
+    grid-template-columns: 1fr; /* Stacked on mobile */
+    text-align: center;
   }
 
-  .footer-copyright {
-    margin-top: 24px;
-    padding-top: 16px;
-    font-size: 12px; /* Smaller text for smaller screens */
+  .footer-heading::after {
+    left: 50%;
+    transform: translateX(-50%); /* Center the underline on mobile */
+  }
+
+  .footer-link:hover {
+    transform: translateY(-2px); /* Vertical lift instead of slide on mobile */
   }
 }

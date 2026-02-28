@@ -71,6 +71,7 @@ const [formData, setFormData] = useState({
   dateFlown: new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }), // e.g. "February 2026"
   seatComfort: "3",
   cabinService: "3",
+  aircraftNumber:'',
   groundService: "3",
   valueMoney: "3",
   date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) // e.g. "11th February 2026"
@@ -117,6 +118,18 @@ useEffect(() => {
     const sum = validRatings.reduce((a, b) => a + b, 0); 
     return (sum / validRatings.length).toFixed(1); 
   };
+  const renderStars = (rating) => {
+  const score = parseFloat(rating) || 0;
+  const stars = [];
+  for (let i = 1; i <= 5; i++) {
+    stars.push(
+      <span key={i} className={i <= score ? "star filled" : "star"}>
+        ★
+      </span>
+    );
+  }
+  return stars;
+};
 
   const averageRating = calculateAverageRating(); 
 
@@ -279,8 +292,8 @@ useEffect(() => {
      
       <div className="tracker-box">
         <div className="airport-header">
-          {flight.departure.city}, IN <br/>
-          <small>{flight.departure.location}</small>
+          {flight.departure.city} <br/>
+          <small>Departure Airport : {flight.departure.location}</small>
         </div>
         <div className="section-title">Flight Departure Times</div>
         <div className="date-label">{flight.departure.date}</div>
@@ -310,8 +323,8 @@ useEffect(() => {
       <div className="tracker-box">
 
         <div className="airport-header">
-          {flight.arrival.city}, IN <br/>
-          <small>{flight.arrival.location}</small>
+          {flight.arrival.city}<br/>
+          <small>Arrival Airport : {flight.arrival.location}</small>
         </div>
         <div className="section-title">Flight Arrival Times</div>
         <div className="date-label">{flight.arrival.date}</div>
@@ -453,12 +466,24 @@ useEffect(() => {
 
                     <p className="review-text">{rev.review}</p>
 
+                
                     <div className="review-rating-pills">
-                      <div className="rating-pill">Seat Comfort : <span>{rev.seatComfort}/5</span></div>
-                      <div className="rating-pill">Cabin Staff Service : <span>{rev.cabinService}/5</span></div>
-                      <div className="rating-pill">Ground Service : <span>{rev.groundService}/5</span></div>
-                      <div className="rating-pill">Value for money : <span>{rev.valueMoney}/5</span></div>
-                    </div>
+                      <div className="rating-pill">
+                        Aircraft :<span className="star-rating">{rev.aircraftNumber}</span>
+                      </div>
+                         <div className="rating-pill">
+                            Seat Comfort : <span className="star-rating">{renderStars(rev.seatComfort)}</span>
+                         </div>
+                          <div className="rating-pill">
+                            Cabin Staff : <span className="star-rating">{renderStars(rev.cabinService)}</span>
+                           </div>
+                     <div className="rating-pill">
+                           Ground Service : <span className="star-rating">{renderStars(rev.groundService)}</span>
+                       </div>
+                     <div className="rating-pill">
+                        Value for Money : <span className="star-rating">{renderStars(rev.valueMoney)}</span>
+                      </div>
+                      </div>
                   </div>
                 ))}
 
@@ -474,10 +499,10 @@ useEffect(() => {
               </button>
 
               <div className="page-numbers">
-                {/* Generate page numbers dynamically */}
+              
                 {[...Array(totalPages)].map((_, index) => {
                   const pageNum = index + 1;
-                  // Logic to show first page, last page, and pages around current page
+                
                   if (
                     pageNum === 1 || 
                     pageNum === totalPages || 
@@ -524,8 +549,6 @@ useEffect(() => {
           </div>
         </div>
       )}
-
-      {/* --- Write Review Modal --- */}
 
 {showWriteForm && (
   <div className="modal-overlay">
@@ -584,7 +607,6 @@ useEffect(() => {
   
   </div>
 )}
-{/* TOAST SECTION - Keep this separate and at the very bottom! */}
     {showSuccessToast && (
       <div className="success-toast">
         <div className="toast-icon">✓</div>

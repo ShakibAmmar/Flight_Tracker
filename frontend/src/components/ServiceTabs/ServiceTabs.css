@@ -1,16 +1,12 @@
 .service-tabs-container {
   width: 100%;
-  background: linear-gradient(
-    45deg,
-    #93cef2
-  ); /* Glassmorphism effect */
-  backdrop-filter: blur(30px);
-  border-radius: 16px 16px 0 0;
-  padding: 6px 10px;
-  box-shadow: 0 100px 500px rgba(255, 255, 255, 0.15), 0 1px 3px rgba(48, 50, 49, 0.804);
-  overflow-x: auto;
-  height: 95px;
- 
+  background: rgba(255, 255, 255, 0.85); /* Modern translucent white */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 24px 24px 0 0; /* Rounded top corners */
+  padding: 15px 30px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-bottom: none;
 }
 
 /* Hide scrollbar */

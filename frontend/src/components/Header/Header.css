@@ -1,21 +1,27 @@
 /* --- CORE HEADER STYLES --- */
 .header {
-  background-color: #ffffff;
-  color: #333;
-  padding: 1px 2px;
-  border-bottom: 1px solid #eee;
+  background-color: rgb(255, 255, 255); /* Changed to transparent for floating effect */
+  color: #ddd2d2;
+  padding: 10px 0px; /* Added padding to create space for the floating look */
+  border-bottom: none; /* Removed line to allow the rounded bar to stand out */
 }
 
 .header-container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 14px 0px;
+  padding: 0px 5px; /* Adjusted padding */
+  position: relative; 
 }
 
+/* --- ADDED ROUNDED FLOATING BACKGROUND --- */
 .header-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: #329efd21; /* This is now the rounded bar's color */
+  padding: 8px 20px;         /* Padding inside the rounded bar */
+  border-radius: 9999px;     /* Makes it a pill-shaped bar */
+    box-shadow: 0 100px 500px  rgba(26, 18, 18, 0.15), 0 1px 1px rgba(102, 119, 123, 0.804);
 }
 
 .header-left {
@@ -24,10 +30,10 @@
   gap: 32px;
 }
 
-.header-actions{
+.header-actions {
   display: flex;
   flex-direction: row;
-  gap: 5px;
+  gap: 8px; 
 }
 
 /* --- LOGO SECTION --- */
@@ -49,12 +55,17 @@
 .logo-flight { color: #bc4747; }
 .logo-tracker { color: #ef721e; }
 
-
-/* --- BUTTON & ACTION STYLES --- */
+/* --- PREMIUM SIMMERING BUTTONS (Unchanged) --- */
 .home-icon-btn, 
 .login-btn, 
 .lang-btn {
-  background: linear-gradient(to right, rgb(83, 178, 254), rgb(6, 90, 243));
+  background: linear-gradient(
+    -45deg, 
+    #2852fc 25%, 
+    #0aa1ff 50%, 
+    #2648f4 75%
+  );
+  background-size: 400% 400%;
   color: #ffffff;
   padding: 8px 24px;
   border-radius: 9999px;
@@ -62,8 +73,9 @@
   font-weight: 600;
   border: none;
   cursor: pointer;
-  box-shadow: 0 100px 500px  rgba(255, 255, 255, 0.15), 0 4px 5px rgba(1, 24, 8, 0.804);
-  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+  animation: liquidGradient 8s ease infinite, simmerVibe 4s ease-in-out infinite;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,19 +85,34 @@
 .login-btn:hover, 
 .lang-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+  filter: brightness(1.1);
+}
+
+@keyframes liquidGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes simmerVibe {
+  0%, 100% { transform: translateY(0) skew(0deg); }
+  25% { transform: translateY(-1px) skew(0.2deg); }
+  50% { transform: translateY(0) skew(-0.2deg); }
+  75% { transform: translateY(0.5px) skew(0.1deg); }
 }
 
 /* --- USER AUTHENTICATED STATE --- */
 .user-nav-profile {
+  background: linear-gradient(-45deg, #3b3ef6, #93cef2, #3b82f6);
+  background-size: 400% 400%;
+  animation: liquidGradient 8s ease infinite;
   display: flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(to right, rgb(83, 178, 254), rgb(6, 90, 243));
-  padding: 0 12px; /* Remove vertical padding, use height instead */
-  border-radius: 9999px; /* Match the pill shape of other buttons */
-  height: 38px; /* Standardize height with .login-btn */
-  box-shadow: 0 3px 5px rgba(1, 24, 8, 0.2);
+  padding: 0 12px;
+  border-radius: 9999px;
+  height: 38px;
   border: none;
 }
 
@@ -93,7 +120,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: white !important; /* Forces text to stay white on the blue background */
+  color: white !important;
 }
 
 .user-name-text {
@@ -118,7 +145,7 @@
 }
 
 .logout-icon-btn:hover {
-  background: #ff1717;
+  background: #dc1b1b;
   transform: scale(1.1);
 }
 
@@ -126,6 +153,7 @@
 .lang-dropdown-wrapper {
   position: relative;
   display: inline-block;
+  z-index: 1001; 
 }
 
 .lang-btn {
@@ -149,26 +177,27 @@
   font-weight: 700;
   color: white;
 }
-/* 2. Flags inside the Dropdown Menu Grid */
+
 .flag-icon {
-  width: 24px !important;   /* Slightly larger for the list */
+  width: 24px !important;
   height: 16px !important;
   object-fit: cover;
   border-radius: 2px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+
 .mega-menu {
   position: absolute;
-  top: 100%;
+  top: calc(100% + 15px); /* Adjusted to sit nicely below the rounded bar */
   right: 0;
-  margin-top: 1px;
   width: 400px;
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   display: flex;
   padding: 20px;
-  z-index: 1000;
+  z-index: 2000; 
+  border: 1px solid #eee;
 }
 
 .menu-section { flex: 1; }
@@ -219,107 +248,118 @@
 .arrow {
   transition: transform 0.3s;
 }
-.mobile-home-icon {
-    display: none;
-  }
+
 .rotate { transform: rotate(180deg); }
 
-/* --- RESPONSIVE --- */
-/* --- IMPROVED RESPONSIVE HEADER --- */
-/* --- FULL RESPONSIVE FIX FOR HEADER & MEGA MENU --- */
+.mobile-home-icon {
+  display: none;
+}
+
+/* --- RESPONSIVE FIXES --- */
 @media (max-width: 768px) {
-  /* 1. Header Container Adjustments */
+  .header {
+    padding: 10px 5px;
+  }
+  
   .header-container {
-    padding: 8px 12px; /* Tighten padding as seen in iPhone SE view */
+    padding: 0px 10px;
   }
 
-  .header-content {
-    justify-content: space-between;
-    gap: 4px;
-  }
+
   .mobile-home-icon {
     display: flex;
   }
 
-  /* 2. Button Alignment & Text Hiding */
   .header-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px; /* Tight gap to keep all 3 buttons on one line */
+    gap: 6px;
   }
 
-  /* Hide labels to prevent the stacking seen in the Tablet screenshot */
   .home-icon-btn span, 
   .user-name-text, 
   .lang-btn .divider-line {
     display: none !important;
   }
-
-  /* Standardize heights for all header elements */
   .home-icon-btn, 
   .login-btn, 
-  .lang-btn, 
+   .lang-btn,
   .user-nav-profile {
     height: 34px; 
-    padding: 0 10px;
-    font-size: 11px;
+    padding: 0px 4.5px;
+    font-size: 10px;
     min-width: auto;
   }
 
-  .user-nav-profile {
-    gap: 4px;
-  }
 
-  /* 3. Mega Menu Viewport Fix (Prevents the overflow in image_18d6e1) */
   .mega-menu {
-    position: fixed; /* Anchors it to the screen, not the button */
-    top: 41px;
+    position: fixed; 
+    top: 70px; /* Adjusted to clear the floating bar height on mobile */
     left: 2.5%;
     right: 2.5%;
     width: 95vw;
-    max-width: none;
-    flex-direction: row; /* Keeps your divider layout side-by-side */
-    padding: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    z-index: 1001;
-  }
-
-  .mega-menu .divider {
-    display: block;
-    margin: 0 8px;
-  }
-
-  .menu-section h4 {
-    font-size: 10px;
-    margin-bottom: 10px;
-  }
-
-  /* 4. Menu Item Optimization */
-  .menu-grid {
-    max-height: 50vh; /* Allows scrolling inside the menu sections */
-    overflow-y: auto;
-  }
-
-  .menu-item {
-    padding: 8px 4px;
-    font-size: 11px;
-    gap: 6px;
-  }
-
-  .menu-item .flag-icon {
-    width: 18px !important;
-    height: 12px !important;
+    z-index: 3000;
   }
 }
-
-/* Extra Small Screens Fix */
-@media (max-width: 480px) {
-  .logo {
-    font-size: 16px;
+/* --- HEADER BUTTON MOBILE FIX --- */
+@media (max-width: 768px) {
+  /* 1. Shrink the gap between logo and buttons */
+  .header-content {
+    padding: 6px 12px;
+    gap: 8px;
+    justify-content: space-between;
   }
-  
-  /* Ensure the buttons don't overlap the logo */
+
   .header-left {
-    flex-shrink: 1;
+    gap: 10px; /* Reduces space between logo and any left-side items */
+  }
+
+  /* 2. Scale the Logo so it doesn't push the buttons out */
+  .logo {
+    font-size: 18px; 
+  }
+
+  /* 3. The Button Fix: Uniform size and spacing */
+  .home-icon-btn, 
+  .login-btn, 
+  .lang-btn,
+  .user-nav-profile {
+    height: 32px;      /* Slightly shorter for mobile */
+    padding: 0 10px !important; /* Consistent horizontal padding */
+    font-size: 11px;    /* Legible but small */
+    min-width: auto;
+    gap: 4px;           /* Gap between icon and text */
+  }
+
+  /* 4. Actions container spacing */
+  .header-actions {
+    gap: 5px; 
+    align-items: center;
+  }
+
+  /* 5. Handle the Currency/Flag button specifically */
+  .lang-btn {
+    padding: 0 8px !important;
+  }
+
+  .flag-icon {
+    width: 20px !important; /* Smaller flag */
+    height: 14px !important;
+  }
+
+  .currency-display {
+    font-size: 12px;
+  }
+
+  /* 6. Hide unnecessary text but keep icons visible */
+  .home-icon-btn span, 
+  .user-name-text, 
+  .divider-line {
+    display: none !important;
+  }
+
+  /* Ensure icons are centered when text is hidden */
+  .home-icon-btn svg, 
+  .login-btn svg {
+    margin: 0;
+    font-size: 16px;
   }
 }

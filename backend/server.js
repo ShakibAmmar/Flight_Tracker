@@ -68,6 +68,7 @@ const reviewSchema = new mongoose.Schema({
     dateFlown: String,
     seatComfort: String,
     cabinService: String,
+    aircraftNumber:String,
     groundService: String,
     valueMoney: String,
     scrapedAt: { type: Date, default: Date.now }
@@ -76,44 +77,49 @@ const reviewSchema = new mongoose.Schema({
 const Review = mongoose.models.Review || mongoose.model('Review', reviewSchema);
 
 // --- NEW: FLIGHT SCRAPER FUNCTION (Based on your provided code) ---
+// --- UPDATED: ROBUST FLIGHT SCRAPER ---
 async function scrapeFlightLive(flightNumber) {
-    // headless: true is better for server/backend usage
-    const browser = await chromium.launch({ headless: true }); 
+    const browser = await chromium.launch({ 
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'] // Critical for server environments
+    }); 
     const page = await browser.newPage();
 
     try {
-        // 1. Go to homepage to handle the mapping (IATA -> ICAO)
+        // 1. Handling the IATA -> ICAO mapping
         await page.goto('https://www.flightaware.com/', { waitUntil: 'networkidle' });
 
-        // 2. Clear and Type in Search Bar
         const searchInput = 'input[data-testid="search-input"]';
         await page.waitForSelector(searchInput);
         await page.click(searchInput);
         await page.keyboard.press('Control+A');
         await page.keyboard.press('Backspace');
-        await page.type(searchInput, flightNumber, { delay: 100 });
+        await page.type(searchInput, flightNumber, { delay: 150 });
 
-        // 3. Wait for the flight-specific result (contains a digit)
+        // 2. Filter for flight results only
         const resultItem = 'li[data-testid="search-result"]';
         const flightResult = page.locator(resultItem).filter({ hasText: /\d/ }).first();
-        await flightResult.waitFor({ state: 'visible', timeout: 10000 });
+        await flightResult.waitFor({ state: 'visible', timeout: 25000 });
 
-        // 4. Navigate to the Live Page
+        // 3. Click and wait for the specific URL pattern
         await Promise.all([
-            page.waitForURL(/\/live\/flight\//i, { waitUntil: 'domcontentloaded', timeout: 20000 }),
+            page.waitForURL(/\/live\/flight\//i, { waitUntil: 'domcontentloaded', timeout: 25000 }),
             flightResult.click()
         ]);
 
-        // 5. Your Specific Extraction Logic
-        await page.waitForSelector('.flightPageSummaryStatus', { timeout: 15000 });
+        // 4. Wait for the main UI element
+        await page.waitForSelector('.flightPageSummaryStatus', { timeout: 20000 });
+        
+        // IMPORTANT: Small delay to let background data (window.FlightPageModel) populate
+        await page.waitForTimeout(1000); 
 
         const result = await page.evaluate(() => {
             const d = window.FlightPageModel?._data;
             const getText = (sel) => document.querySelector(sel)?.innerText?.trim() || "N/A";
 
-            // Your gate cleaning logic
-            const gateRaw = getText('.flightPageSummaryOrigin .flightPageSummaryGateTerminal');
-            const cleanGate = gateRaw.toLowerCase().replace('left','').replace('right','').replace('gate', '').trim();
+            // Cleaner Gate Logic
+            const gateRawOrigin = getText('.flightPageSummaryOrigin .flightPageAirportGate');
+            const cleanGateOrigin = gateRawOrigin.toLowerCase().replace('left','').replace('right','').replace('gate', '').trim();
 
             return {
                 airline: getText('.flightPageFriendlyIdent .flightPageFriendlyIdentLbl'),
@@ -124,10 +130,9 @@ async function scrapeFlightLive(flightNumber) {
                     date: getText('.flightPageSummaryOrigin .flightPageSummaryDepartureDay'),
                     city: getText('.flightPageSummaryOrigin .flightPageSummaryCity'),
                     cityCode: getText('.flightPageSummaryOrigin .flightPageSummaryAirportCode'),
-                    gateTerminal: cleanGate,
+                    gate: cleanGateOrigin,
                     airport: d?.origin?.friendlyName || "N/A",
                     time: getText('.flightPageSummaryOrigin .flightTime'), 
-                    gate:getText('.flightPageSummaryOrigin .flightPageAirportGate'),
                     statusLabel: getText('.flightPageDepartureDelayStatus') 
                 },
                 arrival: {
@@ -136,9 +141,9 @@ async function scrapeFlightLive(flightNumber) {
                     cityCode: getText('.flightPageSummaryDestination .flightPageSummaryAirportCode'),
                     airport: d?.destination?.friendlyName || "N/A",
                     terminal: getText('.flightPageSummaryDestination .flightPageSummaryGateTerminal').replace(/terminal/gi, '').trim() || "N/A",
+                    gate: getText('.flightPageSummaryDestination .flightPageAirportGate'),
                     time: getText('.flightPageSummaryDestination .flightTime'),
-                    statusLabel: getText('.flightPageArrivalDelayStatus'),
-                    gate:getText('.flightPageSummaryDestination .flightPageAirportGate'),
+                    statusLabel: getText('.flightPageArrivalDelayStatus')
                 }
             };
         });
@@ -147,12 +152,11 @@ async function scrapeFlightLive(flightNumber) {
 
     } catch (error) {
         console.error("Scrape Error:", error.message);
-        throw error;
+        throw error; // Rethrow to let the Express route handle it
     } finally {
         await browser.close();
     }
 }
-
 // SIGNUP ROUTE
 app.post('/api/auth/signup', async (req, res) => { 
     try { 
@@ -215,6 +219,7 @@ app.get('/api/flight-tracker/:id', async (req, res) => {
         logScraperActivity(`TRACKER: Scraping live data for ${flightId}`);
         const data = await scrapeFlightLive(flightId);
         res.json(data);
+         console.log("\n--- data send ---");
     } catch (err) {
         console.error("Live Tracker Error:", err);
         res.status(500).json({ error: "Failed to fetch live flight data" });

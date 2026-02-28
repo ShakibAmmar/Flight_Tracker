@@ -23,13 +23,10 @@
   margin: 0;
 }
 
-
-
 .deals-navigation-wrapper {
   position: relative;
   display: flex;
   align-items: center;
- 
 }
 
 .deals-grid {
@@ -49,7 +46,7 @@
 }
 
 .deal-card {
-  min-width: 230px; /* Slightly wider for better text spacing */
+  min-width: 200px; /* REDUCED: Was 230px */
   height: fit-content;
   flex-shrink: 0; 
   background: #ffffff;
@@ -58,7 +55,7 @@
   box-shadow: 0 100px 500px rgba(255, 255, 255, 0.15), 0 3px 2px rgba(92, 96, 93, 0.804);
   transition: all 0.3s ease;
   cursor: pointer;
-  margin-bottom: 20px;
+  margin-bottom: 15px; /* REDUCED: Was 20px */
 }
 
 .deal-card:hover {
@@ -68,7 +65,7 @@
 
 .deal-image {
   position: relative;
-  height: 160px;
+  height: 130px; /* REDUCED: Was 160px */
   overflow: hidden;
   width: 100%;
   border-radius: 12px 12px 0 0;
@@ -93,25 +90,25 @@
   color: #ffffff;
   padding: 6px 12px;
   border-radius: 20px;
-  font-size: 11px;
+  font-size: 10px; /* REDUCED: Was 11px */
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
   z-index: 2;
 }
 
 .deal-content {
-  padding: 20px; /* Increased padding for better breathing room */
+  padding: 16px; /* REDUCED: Was 20px */
 }
 
 .airline-name {
-  font-size: 18px;
+  font-size: 16px; /* REDUCED: Was 18px */
   font-weight: 800;
   color: #111827;
   margin: 0 0 4px 0;
 }
 
 .flight-number {
-  font-size: 15px;
+  font-size: 14px; /* REDUCED: Was 15px */
   color: #2563eb;
   font-weight: 700;
   margin: 0 0 8px 0;
@@ -119,7 +116,7 @@
 }
 
 .flight-route {
-  font-size: 14px;
+  font-size: 13px; /* REDUCED: Was 14px */
   color: #6b7280;
   margin: 0 0 16px 0;
   font-weight: 500;
@@ -129,7 +126,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 16px; /* REDUCED: Was 20px */
 }
 
 .rating-score {
@@ -138,34 +135,41 @@
   gap: 4px;
   background: #fef3c7;
   color: #92400e;
-  padding: 4px 10px;
+  padding: 4px 8px; /* REDUCED: Was 4px 10px */
   border-radius: 6px;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 12px; /* REDUCED: Was 13px */
 }
 
 .rating-reviews {
-  font-size: 12px;
+  font-size: 11px; /* REDUCED: Was 12px */
   color: #9ca3af;
 }
 
 .track-flight-btn {
+  position: relative;
   width: 100%;
-  background: linear-gradient(to right, rgb(83, 178, 254), rgb(6, 90, 243));
+  /* Liquid Gradient Effect */
+  background: linear-gradient(
+    -45deg, 
+    #2852fc 25%, 
+    #0aa1ff 50%, 
+    #2648f4 75%
+  );
+  background-size: 400% 400%;
   color: #ffffff;
+  font-weight: 700;
+  padding: 8px;
+  
+  border-radius: 30px;
+  font-size: 15px; /* REDUCED: Was 17px */
+  letter-spacing: 0.02em;
   border: none;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-  /* CLEANED SHADOW */
-  box-shadow: 0 100px 500px rgba(255, 255, 255, 0.15), 0 4px 5px rgba(1, 24, 8, 0.804);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  margin-top: 15px; /* REDUCED: Was 21px */
+  animation: liquidGradient 8s ease infinite;
 }
 
 .track-flight-btn:hover {
@@ -179,7 +183,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 40px; /* Slightly larger for easier clicking */
+  width: 40px; 
   height: 40px;
   background: white;
   border-radius: 50%;
@@ -236,6 +240,6 @@
   
   .deal-card {
     min-width: 260px;
-    max-height:370px;
+    max-height:3z70px;
   }
 }

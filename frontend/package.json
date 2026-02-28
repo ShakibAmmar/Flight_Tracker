@@ -10,6 +10,9 @@
     "eject": "react-scripts eject"
   },
   "dependencies": {
+    "@react-three/drei": "^9.90.0",
+    "@react-three/fiber": "^8.15.0",
+    "@types/three": "^0.183.1",
     "airport-data": "^1.0.1",
     "airportsjs": "^0.3.1",
     "arc": "^0.2.0",
@@ -21,7 +24,8 @@
     "react-dom": "^18.2.0",
     "react-leaflet": "^4.2.1",
     "react-scripts": "5.0.1",
-    "react-world-flags": "^1.6.0"
+    "react-world-flags": "^1.6.0",
+    "three": "^0.160.0"
   },
   "eslintConfig": {
     "extends": [

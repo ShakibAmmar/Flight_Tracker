@@ -1,42 +1,49 @@
+/* --- CONTAINER: Deep Cinematic Background --- */
 .search-bar-container-new {
-  background-image: linear-gradient(20deg,#000000 , #15457b, #000000);
-
-  padding: 2px 0;
+  background-image: linear-gradient(20deg, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff);
+  padding: 8px 0; /* Slightly more breathable padding */
   position: relative;
-  background-position : center;
- 
+  background-position: center;
   z-index: 500;
-
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .search-bar-new {
   max-width: 1400px;
   margin: 0 auto;
   padding: 2px 3px;
-  
 }
 
+/* --- THE SEARCH CARD: Glassmorphism Effect --- */
 .flight-status-card-search {
-  background-color: linear-gradient(0deg, #15457b, #051423);
+  background: linear-gradient(135deg, rgba(221, 222, 223, 0.85));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 12px;
-  padding: 25px ;
-  margin: 30px;
- box-shadow: 0 100px 500px  rgba(255, 255, 255, 0.15), 3px 2px 6px rgb(0, 0, 0);
- 
+  padding: 2px;
+  margin: 20px;
+  /* Balanced shadow for depth without clutter */
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4), 0 0 0 0px rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
 }
 
 .card-title-search {
-  font-size: 24px;
-  font-weight: bold;
-  color: #ffffff;
-  margin-bottom: 24px;
+  font-size: 22px; /* Slightly refined size */
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+  padding-top:1rem;
+  padding-left:1rem;
 }
 
+/* --- TOGGLES --- */
 .search-type-toggle-new {
   display: flex;
   align-items: center;
   gap: 32px;
   margin-bottom: 24px;
+  padding-left:10px;
 }
 
 .radio-label-new {
@@ -44,71 +51,163 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  transition: opacity 0.2s;
+  
 }
 
+.radio-label-new:hover { opacity: 0.8; }
+
 .radio-label-new input[type="radio"] {
+  accent-color: #0044ff; /* Modern browsers will use this color */
   width: 16px;
   height: 16px;
   cursor: pointer;
 }
 
 .radio-label-new span {
-  color: #ffffff;
+  color: #000000;
   font-weight: 500;
   font-size: 15px;
 }
 
+/* --- FORM GRID --- */
 .search-form-new {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
+  gap: 10px;
 }
 
+/* --- STANDARDIZED FIELD CONTAINER --- */
 .form-field-new {
   display: flex;
   flex-direction: column;
   position: relative;
- z-index: auto;
+  /* Ensure all fields take up the same vertical footprint */
+  min-height: 85px; 
+    padding-left: 10px;
 }
 
+/* --- STANDARDIZED LABEL --- */
+.field-label-new {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  color: #38bdf8; /* Brighter accent blue from your previous style */
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding-left: 10px;
+}
+
+/* --- THE INPUT/DATE BOX (The Fix) --- */
+/* This makes the Date display box match the white text inputs exactly */
+.field-input-new, 
+.date-display-new {
+  width: 100%;
+  height: 38px; /* Standardized height for all fields */
+  background-color: #ffffff !important;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 0 16px; /* Horizontal padding only, vertical centered by flex */
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+/* Specific text alignment for inputs */
+input.field-input-new {
+  display: block; /* Standard input behavior */
+}
+
+/* --- DATE DISPLAY INTERNAL ALIGNMENT --- */
+.date-display-new {
+  justify-content: space-between;
+  margin-bottom: 0; /* Remove the extra bottom margin causing misalignment */
+  margin-top: 0;
+}
+
+.date-info-new {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.2;
+}
+
+.date-text-new {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.day-text-new {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* --- HOVER & FOCUS STATES --- */
+.field-input-new:focus,
+.date-display-new:hover {
+  outline: none;
+  background-color: #ffffff;
+  border-color: #006eff;
+  box-shadow: 0 0 15px rgba(0, 110, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+/* --- ICON STYLING --- */
+.dropdown-icon-new,
+.calendar-icon-new {
+  color: #2563eb;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+}
 .airport-field-new {
   grid-column: span 2;
 }
 
 .field-label-new {
   display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: #006eff;
+  font-size: 11px;
+  font-weight: 700;
+  color: #4da3ff; /* Brighter blue for legibility on dark background */
   margin-bottom: 8px;
   text-transform: uppercase;
+  letter-spacing: 1px;
   z-index: 1;
 }
 
+/* --- INPUTS --- */
 .field-input-new {
   width: 100%;
   background-color: #ffffff;
-  border: none;
-  border-radius: 4px;
+  border: 1px solid transparent;
+  border-radius: 6px; /* Slightly softer corners */
   padding: 12px 16px;
-  color: #000000;
+  color: #0f172a;
   font-weight: 500;
   font-size: 14px;
+  transition: all 0.2s ease;
+  
 }
 
 .field-input-new:focus {
-  outline: 3px solid #0054da;
+  outline: none;
+  border-color: #0054da;
+  box-shadow: 0 0 0 4px rgba(0, 84, 218, 0.2);
   background-color: #ffffff;
 }
 
-/* Autocomplete Styles */
+/* --- AUTOCOMPLETE --- */
 .autocomplete-wrapper-new {
   position: relative;
   z-index: 10;
-}
-
-.autocomplete-wrapper-new .field-input-new {
-  padding-right: 40px;
 }
 
 .dropdown-icon-new {
@@ -116,82 +215,42 @@
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: #6b7280;
+  color: #94a3b8;
   cursor: pointer;
   pointer-events: all;
+  transition: color 0.2s;
 }
+
+.dropdown-icon-new:hover { color: #006eff; }
 
 .autocomplete-dropdown-new {
   position: absolute;
-  top: calc(100% + 4px);
+  top: calc(100% + 6px);
   left: 0;
   right: 0;
   background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
   max-height: 250px;
   overflow-y: auto;
-  z-index:9999;
-  animation: slideDown 0.2s ease-out;
+  z-index: 9999;
+  border: 1px solid #e2e8f0;
+  animation: slideDown 0.25s cubic-bezier(0, 0, 0.2, 1);
 }
 
 .autocomplete-item-new {
   padding: 12px 16px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
   font-size: 14px;
-  color: #374151;
-  
+  color: #334155;
 }
 
 .autocomplete-item-new:hover:not(.disabled) {
-  background-color: #f3f4f6;
+  background-color: #f1f5f9;
+  color: #006eff;
 }
-
-.autocomplete-item-new.disabled {
-  color: #9ca3af;
-  cursor: default;
-  font-style: italic;
-  font-size: 13px;
-}
-
-/* Date Picker Styles */
-.date-picker-wrapper-new {
-  position: relative;
-}
-
-.date-display-new {
-   margin-bottom: 18px;
-  margin-top: 0px;
-  height: 70%;
-  width: 100%;
-  background-color: #f5f5f5;
-  border: none;
-  border-radius: 4px;
-  padding: 2px 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.date-display-new:hover {
-  background-color: #e5e7eb;
-}
-
-.date-text-new {
-  font-size: 15px;
-  font-weight: bold;
-  color: #1f2937;
-}
-
-.day-text-new {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-/* Calendar Dropdown */
+/* --- CALENDAR DROPDOWN CONTAINER --- */
 .calendar-dropdown-new {
   position: absolute;
   top: calc(100% + 8px);
@@ -200,71 +259,34 @@
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   padding: 20px;
-  z-index: 1000;
-  min-width: 320px;
+  z-index: 9999; /* Ensure it floats above all other elements */
+  min-width: 320px; /* Essential for 7 columns to fit */
   animation: slideDown 0.2s ease-out;
 }
 
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* --- THE GRID FIX --- */
+.calendar-grid-new {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important; /* Forces exactly 7 columns */
+  gap: 5px; /* Spacing between dates */
+  text-align: center;
 }
 
-.calendar-header-new {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.calendar-month-new {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.calendar-nav-btn-new {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
+/* --- DAY HEADERS (SU, MO, TU...) --- */
+.calendar-day-header-new {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8; /* Professional slate gray */
+  padding-bottom: 10px;
+  text-transform: uppercase;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s;
-  color: #6b7280;
 }
 
-.calendar-nav-btn-new:hover {
-  background-color: #f3f4f6;
-  color: #1f2937;
-}
-
-.calendar-grid-new {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-}
-
-.calendar-day-header-new {
-  text-align: center;
-  font-size: 12px;
-  font-weight: 600;
-  color: #6b7280;
-  padding: 8px;
-}
-
+/* --- INDIVIDUAL DAY BUTTONS --- */
 .calendar-day-new {
-  aspect-ratio: 1;
+  aspect-ratio: 1 / 1; /* Makes every day a perfect square */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -273,91 +295,109 @@
   background: none;
   cursor: pointer;
   border-radius: 8px;
-  transition: all 0.2s;
-  color: #374151;
+  transition: all 0.2s ease;
+  color: #334155;
   font-weight: 500;
+  padding: 0;
 }
 
+/* --- HOVER & SELECTED STATES --- */
 .calendar-day-new:not(.empty):hover {
-  background-color: #dbeafe;
-  color: #1e40af;
+  background-color: #f1f5f9;
+  color: #2563eb;
 }
 
 .calendar-day-new.selected {
-  background-color: #2563eb;
-  color: #ffffff;
-  font-weight: 600;
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
 }
 
-.calendar-day-new.empty {
-  cursor: default;
-}
-
-.search-btn-wrapper-new {
+/* --- NAVIGATION HEADER --- */
+.calendar-header-new {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
 }
 
+.calendar-month-new {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.calendar-nav-btn-new {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 5px 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.calendar-nav-btn-new:hover {
+  background: #e2e8f0;
+}
+/* --- SEARCH BUTTON: Premium Simmer Style --- */
 .search-btn-new {
   position: relative;
   width: 100%;
-  background: linear-gradient(to right, #53b2fe, #065af3);
+  /* Liquid Gradient Effect */
+  background: linear-gradient(
+    -45deg, 
+    #2852fc 25%, 
+    #0aa1ff 50%, 
+    #2648f4 75%
+  );
+  background-size: 400% 400%;
   color: #ffffff;
-  font-weight: bold;
-  padding: 12px 32px;
-  border-radius: 25px;
-  font-size: 18px;
-  letter-spacing: 0.05em;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 17px;
+  letter-spacing: 0.02em;
   border: none;
   cursor: pointer;
-   box-shadow: 0 100px 500px  rgba(255, 255, 255, 0.15), 0 4px 8px rgba(1, 24, 8, 0.804);
-  transition: all 0.3s;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   margin-top: 21px;
- 
+  animation: liquidGradient 8s ease infinite;
 }
 
 .search-btn-new:hover {
-box-shadow: 0 3px 6px rgba(0, 0, 0, 0);
   transform: translateY(-3px);
-  background: #1d81d8;
+  box-shadow: 0 12px 25px rgba(37, 99, 235, 0.4);
+  filter: brightness(1.1);
 }
 
-@media (max-width: 768px) {
-  .search-bar-new {
-    padding: 0 16px;
-  }
-
-  .flight-status-card-search {
-    padding: 20px;
-  }
-
-  .search-form-new {
-    grid-template-columns: 1fr;
-  }
-  
-  .airport-field-new {
-    grid-column: span 1;
-  }
-
-  .calendar-dropdown-new {
-    min-width: 280px;
-    padding: 16px;
-  }
+@keyframes liquidGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
-/* Add to SearchBar.css */
-/* Shake Animation */
+
+/* --- EXISTING ANIMATIONS --- */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .field-shake {
- animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) both;
+  animation: input-vibrate 0.4s linear; /* Connected your vibrate keyframe */
 }
 
 @keyframes input-vibrate {
   0%, 100% { transform: translateX(0); }
-  20% { transform: translateX(-4px); }
-  40% { transform: translateX(4px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
 }
-/* Error Labels Row */
+
+/* --- ERROR STATES --- */
 .label-row {
   display: flex;
   justify-content: space-between;
@@ -365,19 +405,27 @@ box-shadow: 0 3px 6px rgba(0, 0, 0, 0);
   margin-bottom: 4px;
 }
 
-/* Red Error Tag */
 .error-tag {
-  background-color: #ffebee;
-  color: #d32f2f;
+  background-color: #fee2e2;
+  color: #dc2626;
   font-size: 10px;
-  padding: 2px 6px;
+  padding: 2px 8px;
   border-radius: 4px;
-  font-weight: 600;
-  border: 1px solid #ffcdd2;
+  font-weight: 700;
+  border: 1px solid #fecaca;
+  text-transform: uppercase;
 }
 
-/* Red Input Border */
 .input-error {
-  border: 1.5px solid #d32f2f !important;
-  background-color: #fff8f8 !important;
+  border: 1.5px solid #ef4444 !important;
+  background-color: #fef2f2 !important;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+  .search-bar-new { padding: 0 16px; }
+  .flight-status-card-search { padding: 20px; margin: 15px; }
+  .search-form-new { grid-template-columns: 1fr; }
+  .airport-field-new { grid-column: span 1; }
 }

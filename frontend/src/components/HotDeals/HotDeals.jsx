@@ -85,7 +85,7 @@ function HotDeals({ onFlightSelect }) {
       flightNumber: 'QP-1305',
       rating: 8.9,
       reviews: 5621,
-      image: '/flight-bg21.jpg',
+      image: '/flight-bg27.jpg',
       route: 'Mumbai → Bangalore',
       origin: 'BOM',
       destination: 'BLR',

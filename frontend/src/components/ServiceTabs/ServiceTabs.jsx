@@ -1,14 +1,14 @@
 import './ServiceTabs.css';
 import { 
   Plane,  
-  // MapPin, ShipIcon 
+  MapPin, ShipIcon 
 } from 'lucide-react';
 
 function ServiceTabs() {
   const services = [ 
     { icon: Plane, name: 'Flights', active: true, color: '#2563eb' },
-    // { icon: MapPin, name: 'Live Tracking', badge: 'new', color: '#2563eb' },
-    //  { icon: ShipIcon, name: 'Ship',badge: 'new', color: '#2563eb' },
+    { icon: MapPin, name: 'Live Tracking', badge: 'new', color: '#2563eb' },
+     { icon: ShipIcon, name: 'Ship',badge: 'new', color: '#2563eb' },
      
      /*
     

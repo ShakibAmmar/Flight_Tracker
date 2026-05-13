@@ -94,3 +94,89 @@
     text-decoration: none;
     font-weight: 600;
 }
+
+@media (max-width: 768px) {
+    .foresight-container {
+        margin: 34px 16px;
+        padding: 28px 16px;
+        border-radius: 14px;
+    }
+
+    .foresight-content {
+        margin-bottom: 22px;
+    }
+
+    .foresight-content h2 {
+        font-size: 24px;
+        line-height: 1.2;
+        margin-bottom: 10px;
+    }
+
+    .foresight-content p {
+        font-size: 15px;
+        line-height: 1.55;
+        max-width: 100%;
+    }
+
+    .sliding-view-wrapper {
+        margin: 22px -16px 0;
+        overflow: hidden;
+    }
+
+    .sliding-view-container {
+        gap: 14px;
+        padding: 0 16px 12px;
+        scroll-snap-type: x mandatory;
+    }
+
+    .foresight-image-card {
+        min-width: min(78vw, 300px);
+        height: 170px;
+        border-radius: 10px;
+        scroll-snap-align: start;
+    }
+
+    .foresight-links-section {
+        margin-top: 26px;
+        padding-top: 16px;
+    }
+
+    .foresight-links-section h3 {
+        font-size: 18px;
+    }
+
+    .foresight-links {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .foresight-container {
+        margin: 26px 12px;
+        padding: 24px 14px;
+    }
+
+    .foresight-content h2 {
+        font-size: 21px;
+    }
+
+    .foresight-content p {
+        font-size: 14px;
+    }
+
+    .sliding-view-wrapper {
+        margin-left: -14px;
+        margin-right: -14px;
+    }
+
+    .sliding-view-container {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .foresight-image-card {
+        min-width: 84vw;
+        height: 150px;
+    }
+}

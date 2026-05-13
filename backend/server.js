@@ -99,60 +99,57 @@ async function scrapeFlightLive(flightNumber) {
     console.log(` Searching for flight: ${flightNumber}...`);
 
     try {
-       await page.goto('https://www.flightaware.com/', {
-    waitUntil: 'domcontentloaded',
-    timeout: 60000
-});
+        const cleanFlightNumber = String(flightNumber).trim().replace(/\s+/g, '').toUpperCase();
+        const airlineCodeMap = {
+            AI: 'AIC',
+            AA: 'AAL',
+            AC: 'ACA',
+            AF: 'AFR',
+            BA: 'BAW',
+            B6: 'JBU',
+            DL: 'DAL',
+            EK: 'UAE',
+            KL: 'KLM',
+            LH: 'DLH',
+            QR: 'QTR',
+            QF: 'QFA',
+            SQ: 'SIA',
+            TK: 'THY',
+            UA: 'UAL',
+            VS: 'VIR',
+            WN: 'SWA'
+        };
+        const flightMatch = cleanFlightNumber.match(/^([A-Z0-9]{2})(.+)$/);
+        const mappedFlightNumber = flightMatch && airlineCodeMap[flightMatch[1]]
+            ? `${airlineCodeMap[flightMatch[1]]}${flightMatch[2]}`
+            : null;
+        const flightCandidates = [...new Set([cleanFlightNumber, mappedFlightNumber].filter(Boolean))];
 
-  await page.waitForTimeout(2000);
+        let pageLoaded = false;
+        let lastFlightError;
 
-try {
-    await page.waitForSelector('button:has-text("Agree"), button:has-text("Accept")', { timeout: 5000 });
-    await page.click('button:has-text("Agree"), button:has-text("Accept")');
-    console.log(" Cookie popup accepted");
-} catch {
-    console.log(" No cookie popup");
-}
-
-const searchInput = page.locator('[data-testid="search"] .pointer-events-auto input');
-await searchInput.waitFor({ state: 'visible', timeout: 25000 });
-await searchInput.evaluate((input, value) => {
-    input.scrollIntoView({ block: 'center', inline: 'center' });
-    input.focus();
-    input.value = '';
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    input.value = value;
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-}, flightNumber);
-await page.waitForTimeout(2000);
-
-        console.log("Waiting for flight suggestions (ignoring default airports)...");
-
-        const resultItemSelector = 'li[data-testid="search-result"]';
-        const flightSpecificResult = page.locator(resultItemSelector).filter({ hasText: /\d/ });
-
-        try {
-            await flightSpecificResult.first().waitFor({ state: 'visible', timeout: 10000 });
-        } catch {
-            await searchInput.press('Enter');
-            await flightSpecificResult.first().waitFor({ state: 'visible', timeout: 60000 });
+        for (const candidate of flightCandidates) {
+            try {
+                const flightUrl = `https://www.flightaware.com/live/flight/${candidate}`;
+                console.log(` Opening direct FlightAware URL: ${flightUrl}`);
+                await page.goto(flightUrl, {
+                    waitUntil: 'domcontentloaded',
+                    timeout: 60000
+                });
+                await page.waitForSelector('.flightPageSummaryStatus', { timeout: 40000 });
+                pageLoaded = true;
+                break;
+            } catch (candidateError) {
+                lastFlightError = candidateError;
+                console.log(` Direct FlightAware URL failed for ${candidate}: ${candidateError.message}`);
+            }
         }
 
-        console.log(` Clicking mapped flight...`);
-        
-        await Promise.all([
-            page.waitForURL(/\/live\/flight\//i, { 
-                waitUntil: 'domcontentloaded', 
-                timeout: 20000 
-            }), 
-            flightSpecificResult.first().click()
-        ]);
+        if (!pageLoaded) {
+            throw lastFlightError || new Error(`Unable to open FlightAware page for ${cleanFlightNumber}`);
+        }
 
         console.log(` Success! Arrived at: ${page.url()}`);
-
-        // 4. Wait for the main UI element
-        await page.waitForSelector('.flightPageSummaryStatus', { timeout: 40000 });
         
         // IMPORTANT: Small delay to let background data (window.FlightPageModel) populate
         await page.waitForTimeout(2000); 

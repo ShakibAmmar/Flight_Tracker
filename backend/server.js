@@ -17,6 +17,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.json({
+        status: 'ok',
+        message: 'FlightTracker Backend API is running',
+        routes: {
+            reviews: '/api/reviews/:airline',
+            authSignup: '/api/auth/signup',
+            authLogin: '/api/auth/login',
+            flightTracker: '/api/flight-tracker/:id',
+            flightsSummary: '/api/flights/summary'
+        }
+    });
+});
+
 // --- CONFIGURATION ---
 const JWT_SECRET = process.env.JWT_SECRET; // Use a long random string
 

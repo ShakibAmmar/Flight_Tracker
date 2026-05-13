@@ -224,6 +224,15 @@ const Review = mongoose.models.Review || mongoose.model('Review', reviewSchema);
 // --- NEW: FLIGHT SCRAPER FUNCTION (Based on your provided code) ---
 // --- UPDATED: ROBUST FLIGHT SCRAPER ---
 async function scrapeFlightLive(flightNumber) {
+    const mappedFlightNumber = getFlightAwareIdent(flightNumber);
+
+    try {
+        console.log(` Fetching FlightAware data without browser: ${mappedFlightNumber}`);
+        return await fetchFlightAwareFallback(mappedFlightNumber);
+    } catch (fallbackError) {
+        console.log(` HTTP FlightAware fallback failed, trying browser scraper: ${fallbackError.message}`);
+    }
+
        const browser = await chromium.launch({
         headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox']
@@ -279,7 +288,6 @@ await page.waitForTimeout(2000);
                 flightSpecificResult.first().click()
             ]);
         } catch (suggestionError) {
-            const mappedFlightNumber = getFlightAwareIdent(flightNumber);
             console.log(` Suggestions unavailable. Fetching mapped flight directly: ${mappedFlightNumber}`);
             return await fetchFlightAwareFallback(mappedFlightNumber);
         }

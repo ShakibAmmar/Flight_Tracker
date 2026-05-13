@@ -6,6 +6,7 @@ import { GreatCircle } from 'arc';
 
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+import { apiUrl } from '../../utils/api';
 
 const BACKUP_AIRPORTS = {
   "JFK": [40.6413, -73.7781],
@@ -182,7 +183,7 @@ const MapComponent = ({ selectedFlight }) => {
         flightNum = callsignMap[prefix] + flightNum.substring(2);
       }
 
-      const res = await fetch(`https://opensky-network.org/api/states/all`);
+      const res = await fetch(apiUrl('/api/opensky/states'));
       if (res.ok) {
         const data = await res.json();
         const found = data.states?.find(s => s[1] && s[1].trim().toUpperCase() === flightNum);
@@ -273,18 +274,14 @@ const MapComponent = ({ selectedFlight }) => {
         zoomControl={false}
         style={{ height: '100%', width: '100%', background: '#001a33' }}
       >
-<TileLayer
-  url="https://tiles.openfreemap.org/styles/liberty/{z}/{x}/{y}.png"
-  attribution='&copy; <a href="https://openfreemap.org">OpenFreeMap</a>'
-  maxZoom={20}
-/>
-<TileLayer
-  url="https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.png"
-  opacity={0.9}
-/>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          maxZoom={19}
+        />
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"
-          opacity={0.9}
+          opacity={0.45}
         />
         <RecenterMap position={livePos} />
 

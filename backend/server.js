@@ -515,6 +515,26 @@ app.get('/api/flight-tracker/:id', async (req, res) => {
     }
 });
 
+app.get('/api/opensky/states', async (req, res) => {
+    try {
+        const response = await fetch('https://opensky-network.org/api/states/all', {
+            headers: {
+                'user-agent': 'FlightTracker/1.0'
+            }
+        });
+
+        if (!response.ok) {
+            return res.status(response.status).json({ error: 'OpenSky request failed' });
+        }
+
+        const data = await response.json();
+        res.json(data);
+    } catch (err) {
+        console.error('OpenSky Proxy Error:', err);
+        res.status(502).json({ error: 'Failed to fetch OpenSky states' });
+    }
+});
+
 app.get('/api/flights/summary', async (req, res) => {
     try {
         const flights = await Review.aggregate([

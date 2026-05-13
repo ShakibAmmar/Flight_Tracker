@@ -46,6 +46,111 @@ const getFlightAwareIdent = (flightNumber) => {
     return cleanFlightNumber;
 };
 
+const firstValue = (...values) => values.find(value => value !== undefined && value !== null && value !== "") || "N/A";
+
+const cleanTimezone = (timezone) => timezone?.replace(/^:/, '') || undefined;
+
+const formatFlightAwareTime = (seconds, timezone) => {
+    if (!seconds || seconds === "N/A") return "N/A";
+    return new Date(seconds * 1000).toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: cleanTimezone(timezone)
+    });
+};
+
+const formatFlightAwareDate = (seconds, timezone) => {
+    if (!seconds || seconds === "N/A") return "N/A";
+    return new Date(seconds * 1000).toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        timeZone: cleanTimezone(timezone)
+    });
+};
+
+const buildFlightResultFromBootstrap = (bootstrap) => {
+    const flightContainer = bootstrap?.flights ? Object.values(bootstrap.flights)[0] : null;
+    const flight = flightContainer?.activityLog?.flights?.[0] || flightContainer;
+
+    if (!flight || flight.unknown) {
+        throw new Error("FlightAware did not return flight tracking data for this flight.");
+    }
+
+    const origin = flight.origin || {};
+    const destination = flight.destination || {};
+    const departureSeconds = firstValue(
+        flight.gateDepartureTimes?.actual,
+        flight.gateDepartureTimes?.estimated,
+        flight.gateDepartureTimes?.scheduled,
+        flight.takeoffTimes?.actual,
+        flight.takeoffTimes?.estimated,
+        flight.takeoffTimes?.scheduled
+    );
+    const arrivalSeconds = firstValue(
+        flight.gateArrivalTimes?.actual,
+        flight.gateArrivalTimes?.estimated,
+        flight.gateArrivalTimes?.scheduled,
+        flight.landingTimes?.actual,
+        flight.landingTimes?.estimated,
+        flight.landingTimes?.scheduled
+    );
+    const durationMinutes = flight.flightPlan?.ete ? Math.round(flight.flightPlan.ete / 60) : null;
+
+    return {
+        status: firstValue(
+            flight.flightStatus,
+            flight.cancelled ? "Cancelled" : "",
+            flight.diverted ? "Diverted" : "",
+            "Scheduled"
+        ),
+        duration: durationMinutes ? `${Math.floor(durationMinutes / 60)}h ${durationMinutes % 60}m` : "N/A",
+        aircraftType: firstValue(flight.aircraftTypeFriendly, flight.aircraftType),
+        speed: flight.flightPlan?.speed ? `${flight.flightPlan.speed} mph` : "N/A",
+        altitude: flight.flightPlan?.altitude ? `${flight.flightPlan.altitude} ft` : "N/A",
+        distance: flight.flightPlan?.directDistance ? `${flight.flightPlan.directDistance} mi` : "N/A",
+        departure: {
+            date: formatFlightAwareDate(departureSeconds, origin.TZ),
+            city: firstValue(origin.friendlyLocation, origin.friendlyName),
+            cityCode: firstValue(origin.iata, origin.icao),
+            gate: firstValue(origin.gate, origin.terminal ? `Terminal ${origin.terminal}` : ""),
+            airport: firstValue(origin.friendlyName, origin.icao),
+            time: formatFlightAwareTime(departureSeconds, origin.TZ),
+            statusLabel: flight.gateDepartureTimes?.actual ? "Departed" : "Scheduled"
+        },
+        arrival: {
+            date: formatFlightAwareDate(arrivalSeconds, destination.TZ),
+            city: firstValue(destination.friendlyLocation, destination.friendlyName),
+            cityCode: firstValue(destination.iata, destination.icao),
+            airport: firstValue(destination.friendlyName, destination.icao),
+            terminal: firstValue(destination.terminal ? `Terminal ${destination.terminal}` : "", destination.gate),
+            time: formatFlightAwareTime(arrivalSeconds, destination.TZ),
+            statusLabel: flight.gateArrivalTimes?.actual ? "Arrived" : "Scheduled"
+        }
+    };
+};
+
+const fetchFlightAwareFallback = async (mappedFlightNumber) => {
+    const response = await fetch(`https://www.flightaware.com/live/flight/${mappedFlightNumber}`, {
+        headers: {
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36',
+            accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`FlightAware fallback returned HTTP ${response.status}`);
+    }
+
+    const html = await response.text();
+    const match = html.match(/var trackpollBootstrap\s*=\s*(\{[\s\S]*?\});<\/script>/);
+    if (!match) {
+        throw new Error("FlightAware fallback page did not contain trackpollBootstrap data.");
+    }
+
+    return buildFlightResultFromBootstrap(JSON.parse(match[1]));
+};
+
 app.get('/', (req, res) => {
     res.json({
         status: 'ok',
@@ -175,12 +280,8 @@ await page.waitForTimeout(2000);
             ]);
         } catch (suggestionError) {
             const mappedFlightNumber = getFlightAwareIdent(flightNumber);
-            console.log(` Suggestions unavailable. Opening mapped flight directly: ${mappedFlightNumber}`);
-            await page.goto(`https://www.flightaware.com/live/flight/${mappedFlightNumber}`, {
-                waitUntil: 'domcontentloaded',
-                timeout: 60000
-            });
-            await page.waitForFunction(() => window.trackpollBootstrap || window.FlightPageModel, { timeout: 40000 });
+            console.log(` Suggestions unavailable. Fetching mapped flight directly: ${mappedFlightNumber}`);
+            return await fetchFlightAwareFallback(mappedFlightNumber);
         }
 
         console.log(` Success! Arrived at: ${page.url()}`);

@@ -268,7 +268,11 @@ app.get('/api/flight-tracker/:id', async (req, res) => {
          console.log("\n--- data send ---");
     } catch (err) {
         console.error("Live Tracker Error:", err);
-        res.status(500).json({ error: "Failed to fetch live flight data" });
+        const response = { error: "Failed to fetch live flight data" };
+        if (req.query.debug === 'true') {
+            response.details = err.message;
+        }
+        res.status(500).json(response);
     }
 });
 

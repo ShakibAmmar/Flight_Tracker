@@ -61,8 +61,6 @@ const handleSubmit = async (e) => {
     // --- 2. SIGNUP VIEW ---
     if (view === 'signup') {
       try {
-        await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-
         const signupResponse = await fetch(apiUrl('/api/auth/signup'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -72,6 +70,12 @@ const handleSubmit = async (e) => {
         const signupData = await signupResponse.json();
 
         if (signupResponse.ok) {
+          try {
+            await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+          } catch (firebaseErr) {
+            console.warn('Firebase signup sync skipped:', firebaseErr.message);
+          }
+
           setServerMessage({ type: 'success', text: 'Account created! Please login.' });
           setView('login');
         } else {
@@ -85,12 +89,8 @@ const handleSubmit = async (e) => {
       return;
     }
     
-    // --- 3. LOGIN VIEW (Updated to use Firebase) ---
+    // --- 3. LOGIN VIEW ---
     try {
-      // First, authenticate with Firebase using the NEW password
-      await signInWithEmailAndPassword(auth, formData.email, formData.password);
-
-      // If Firebase succeeds, proceed to log in to your local backend
       const loginResponse = await fetch(apiUrl('/api/auth/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -100,22 +100,26 @@ const handleSubmit = async (e) => {
       const loginData = await loginResponse.json();
 
       if (loginResponse.ok) {
+        try {
+          await signInWithEmailAndPassword(auth, formData.email, formData.password);
+        } catch (firebaseErr) {
+          console.warn('Firebase login sync skipped:', firebaseErr.message);
+        }
+
         localStorage.setItem('token', loginData.token);
         localStorage.setItem('user', JSON.stringify(loginData.user));
         onClose(); 
         window.location.reload(); 
       } else {
-        // This handles cases where Firebase succeeds but local backend still has old info
         setServerMessage({ 
           type: 'error', 
-          text: 'Firebase login successful, but local server error: ' + (loginData.error || 'Invalid local credentials') 
+          text: loginData.error || 'Invalid email or password' 
         });
       }
     } catch (err) {
-      // This catches incorrect passwords for the registered user
       setServerMessage({ 
         type: 'error', 
-        text: 'Invalid credentials. Please check your email and NEW password.' 
+        text: 'Login Error: ' + err.message 
       });
     } finally {
       setIsLoading(false);

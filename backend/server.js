@@ -17,6 +17,35 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const airlineCodeMap = {
+    AI: 'AIC',
+    AA: 'AAL',
+    AC: 'ACA',
+    AF: 'AFR',
+    BA: 'BAW',
+    B6: 'JBU',
+    DL: 'DAL',
+    EK: 'UAE',
+    KL: 'KLM',
+    LH: 'DLH',
+    QR: 'QTR',
+    QF: 'QFA',
+    SQ: 'SIA',
+    TK: 'THY',
+    UA: 'UAL',
+    VS: 'VIR',
+    WN: 'SWA'
+};
+
+const getFlightAwareIdent = (flightNumber) => {
+    const cleanFlightNumber = String(flightNumber).trim().replace(/\s+/g, '').toUpperCase();
+    const match = cleanFlightNumber.match(/^([A-Z0-9]{2})(.+)$/);
+    if (match && airlineCodeMap[match[1]]) {
+        return `${airlineCodeMap[match[1]]}${match[2]}`;
+    }
+    return cleanFlightNumber;
+};
+
 app.get('/', (req, res) => {
     res.json({
         status: 'ok',
@@ -132,31 +161,66 @@ await page.waitForTimeout(2000);
         const resultItemSelector = 'li[data-testid="search-result"]';
         const flightSpecificResult = page.locator(resultItemSelector).filter({ hasText: /\d/ });
 
-        await flightSpecificResult.first().waitFor({ state: 'visible', timeout: 70000 });
+        try {
+            await flightSpecificResult.first().waitFor({ state: 'visible', timeout: 70000 });
 
-        console.log(` Clicking mapped flight...`);
-        
-        await Promise.all([
-            page.waitForURL(/\/live\/flight\//i, { 
-                waitUntil: 'domcontentloaded', 
-                timeout: 20000 
-            }), 
-            flightSpecificResult.first().click()
-        ]);
+            console.log(` Clicking mapped flight...`);
+            
+            await Promise.all([
+                page.waitForURL(/\/live\/flight\//i, { 
+                    waitUntil: 'domcontentloaded', 
+                    timeout: 20000 
+                }), 
+                flightSpecificResult.first().click()
+            ]);
+        } catch (suggestionError) {
+            const mappedFlightNumber = getFlightAwareIdent(flightNumber);
+            console.log(` Suggestions unavailable. Opening mapped flight directly: ${mappedFlightNumber}`);
+            await page.goto(`https://www.flightaware.com/live/flight/${mappedFlightNumber}`, {
+                waitUntil: 'domcontentloaded',
+                timeout: 60000
+            });
+            await page.waitForFunction(() => window.trackpollBootstrap || window.FlightPageModel, { timeout: 40000 });
+        }
 
         console.log(` Success! Arrived at: ${page.url()}`);
 
         // 4. Wait for the main UI element
-        await page.waitForSelector('.flightPageSummaryStatus', { timeout: 40000 });
+        await page.waitForSelector('.flightPageSummaryStatus', { timeout: 40000 }).catch(() => {
+            console.log(" Flight summary DOM not visible; using FlightAware data model fallback");
+        });
         
         // IMPORTANT: Small delay to let background data (window.FlightPageModel) populate
         await page.waitForTimeout(2000); 
 
    const result = await page.evaluate(() => {
     const d = window.FlightPageModel?._data;
+    const bootstrapFlightContainer = window.trackpollBootstrap?.flights
+        ? Object.values(window.trackpollBootstrap.flights)[0]
+        : null;
+    const bootstrapFlight = bootstrapFlightContainer?.activityLog?.flights?.[0] || bootstrapFlightContainer;
     
     // Helper to get text by selector
     const getText = (sel) => document.querySelector(sel)?.innerText?.trim() || "N/A";
+    const cleanTimezone = (timezone) => timezone?.replace(/^:/, '') || undefined;
+    const formatTime = (seconds, timezone) => {
+        if (!seconds) return "N/A";
+        return new Date(seconds * 1000).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: cleanTimezone(timezone)
+        });
+    };
+    const formatDate = (seconds, timezone) => {
+        if (!seconds) return "N/A";
+        return new Date(seconds * 1000).toLocaleDateString('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+            timeZone: cleanTimezone(timezone)
+        });
+    };
+    const firstValue = (...values) => values.find(value => value !== undefined && value !== null && value !== "") || "N/A";
 
     // NEW Helper: Finds the data value by matching the label text
     const getValueByLabel = (labelTitle) => {
@@ -171,8 +235,68 @@ await page.waitForTimeout(2000);
     const cleanGate = gateRaw.toLowerCase()
         .replace('left', '').replace('right', '').replace('departing from ', '').trim();
 
+    const domStatus = getText('.flightPageSummaryStatus');
+    if (domStatus === "N/A" && bootstrapFlight) {
+        const origin = bootstrapFlight.origin || {};
+        const destination = bootstrapFlight.destination || {};
+        const departureSeconds = firstValue(
+            bootstrapFlight.gateDepartureTimes?.actual,
+            bootstrapFlight.gateDepartureTimes?.estimated,
+            bootstrapFlight.gateDepartureTimes?.scheduled,
+            bootstrapFlight.takeoffTimes?.actual,
+            bootstrapFlight.takeoffTimes?.estimated,
+            bootstrapFlight.takeoffTimes?.scheduled
+        );
+        const arrivalSeconds = firstValue(
+            bootstrapFlight.gateArrivalTimes?.actual,
+            bootstrapFlight.gateArrivalTimes?.estimated,
+            bootstrapFlight.gateArrivalTimes?.scheduled,
+            bootstrapFlight.landingTimes?.actual,
+            bootstrapFlight.landingTimes?.estimated,
+            bootstrapFlight.landingTimes?.scheduled
+        );
+        const durationMinutes = bootstrapFlight.flightPlan?.ete
+            ? Math.round(bootstrapFlight.flightPlan.ete / 60)
+            : null;
+        const duration = durationMinutes
+            ? `${Math.floor(durationMinutes / 60)}h ${durationMinutes % 60}m`
+            : "N/A";
+
+        return {
+            status: firstValue(
+                bootstrapFlight.flightStatus,
+                bootstrapFlight.cancelled ? "Cancelled" : "",
+                bootstrapFlight.diverted ? "Diverted" : "",
+                "Scheduled"
+            ),
+            duration,
+            aircraftType: firstValue(bootstrapFlight.aircraftTypeFriendly, bootstrapFlight.aircraftType),
+            speed: bootstrapFlight.flightPlan?.speed ? `${bootstrapFlight.flightPlan.speed} mph` : "N/A",
+            altitude: bootstrapFlight.flightPlan?.altitude ? `${bootstrapFlight.flightPlan.altitude} ft` : "N/A",
+            distance: bootstrapFlight.flightPlan?.directDistance ? `${bootstrapFlight.flightPlan.directDistance} mi` : "N/A",
+            departure: {
+                date: formatDate(departureSeconds, origin.TZ),
+                city: firstValue(origin.friendlyLocation, origin.friendlyName),
+                cityCode: firstValue(origin.iata, origin.icao),
+                gate: firstValue(origin.gate, origin.terminal ? `Terminal ${origin.terminal}` : ""),
+                airport: firstValue(origin.friendlyName, origin.icao),
+                time: formatTime(departureSeconds, origin.TZ),
+                statusLabel: bootstrapFlight.gateDepartureTimes?.actual ? "Departed" : "Scheduled"
+            },
+            arrival: {
+                date: formatDate(arrivalSeconds, destination.TZ),
+                city: firstValue(destination.friendlyLocation, destination.friendlyName),
+                cityCode: firstValue(destination.iata, destination.icao),
+                airport: firstValue(destination.friendlyName, destination.icao),
+                terminal: firstValue(destination.terminal ? `Terminal ${destination.terminal}` : "", destination.gate),
+                time: formatTime(arrivalSeconds, destination.TZ),
+                statusLabel: bootstrapFlight.gateArrivalTimes?.actual ? "Arrived" : "Scheduled"
+            }
+        };
+    }
+
     return {
-        status: getText('.flightPageSummaryStatus'), 
+        status: domStatus, 
         duration: getText('.flightPageProgressTotal'),
         // Targeted extraction using the new helper
         aircraftType: getValueByLabel('Aircraft Type'),

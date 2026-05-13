@@ -52,8 +52,8 @@
   transform: translateY(-1px);
 }
 
-.logo-flight { color: #bc4747; }
-.logo-tracker { color: #ef721e; }
+.logo-flight { color: #b00000; }
+.logo-tracker { color: #be5006; }
 
 /* --- PREMIUM SIMMERING BUTTONS (Unchanged) --- */
 .home-icon-btn, 
@@ -361,5 +361,73 @@
   .login-btn svg {
     margin: 0;
     font-size: 16px;
+  }
+}
+.header-action-btn {
+  background: rgba(255, 255, 255, 0.1); /* Semi-transparent */
+  backdrop-filter: blur(5px); /* Glass blur effect */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle glass border */
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 50px; /* Fully rounded pill shape */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Gradient hover effect */
+.header-action-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #3b82f6; /* Blue accent */
+  color: #1d4ed8;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Shine effect on hover */
+.header-action-btn::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(45deg);
+  transition: all 0.5s;
+  opacity: 0;
+}
+
+.header-action-btn:hover::after {
+  opacity: 1;
+  left: 100%;
+  top: 100%;
+}
+
+.header-action-btn svg {
+  stroke-width: 2;
+  transition: stroke 0.2s;
+}
+
+/* Responsive adjustment for mobile */
+@media (max-width: 768px) {
+  .header-action-btn span {
+    display: none; /* Hide text on small screens, keep icon */
+  }
+  .header-action-btn {
+    padding: 10px; /* Square button */
+    border-radius: 50%; /* Make it circular */
   }
 }

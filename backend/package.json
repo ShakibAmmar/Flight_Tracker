@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "start": "node server.js",
+    "postinstall": "npx playwright install chromium"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
@@ -13,4 +17,5 @@
     "playwright-stealth": "^0.0.1",
     "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
+  
 }

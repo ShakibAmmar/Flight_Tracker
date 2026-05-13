@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const Review = mongoose.models.Review || mongoose.model('Review', new mongoose.Schema({
     airline: { type: String, lowercase: true }, 
     user: String, 
+    airlinesName:String,
     rating: String, 
     date: String, 
     review: { type: String, unique: true },
@@ -33,7 +34,6 @@ async function runScraper(airlineName) {
     const slug = airlineName.toLowerCase().trim().replace(/\s+/g, '-');
     let allReviews = [];
     const maxPages = 3; 
-
     console.log(` Starting multi-page scrape for: ${airlineName}`);
     
     try {
@@ -42,14 +42,14 @@ async function runScraper(airlineName) {
             const url = `https://www.airlinequality.com/airline-reviews/${slug}/page/${i}/`;
             console.log(` Scraping Page ${i}: ${url}`);
 
-            await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+            await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 40000 });
 
             // Check if reviews exist on this page. If not, break the loop.
             const hasReviews = await page.$('article[itemprop="review"]');
             if (!hasReviews) {
                 console.log(`ℹ No reviews found on page ${i}. Finishing scrape.`);
                 break;
-            }
+            }  
 
             const pageReviews = await page.evaluate((airline) => {
                 const cards = document.querySelectorAll('article[itemprop="review"]');
@@ -120,3 +120,7 @@ async function runScraper(airlineName) {
 }
 
 module.exports = { runScraper };
+
+
+
+

@@ -105,8 +105,6 @@
   }
 }
 
-/* Apply it specifically to the Live Location icon wrapper */
-/* Find the icon with the color '#8b5cf6' (purple) */
 .service-tab:nth-child(2) .service-icon-wrapper {
   animation: livePulse 2s infinite;
   border: 1px solid rgba(139, 92, 246, 0.3);

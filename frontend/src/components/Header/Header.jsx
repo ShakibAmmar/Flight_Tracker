@@ -1,66 +1,73 @@
-import React, { useEffect, useState } from "react";
-import Flag from "react-world-flags";
-import { ChevronDown, LogOut, User as UserIcon, Home } from "lucide-react";
+import  { useEffect, useState } from "react";
+// import Flag from "react-world-flags";
+import {  LogOut, User as UserIcon, Home, } from "lucide-react";
 import "./Header.css";
 import Login from "../Auth/Login";
+// ChevronDown,HelpCircle, Info should be in section of lucide react 
+// const languages = [
+//   { code: "IN", name: "Hindi", label: "HIN" },
+//   { code: "GB", name: "English", label: "ENG" },
+//   { code: "AE", name: "Arabic", label: "AR" },
+//   { code: "TH", name: "Thai", label: "TH" },
+//   { code: "FR", name: "French", label: "FR" },
+//   { code: "DE", name: "German", label: "DE" },
+//   { code: "JP", name: "Japanese", label: "JP" },
+//   { code: "IT", name: "Italian", label: "IT" },
+//   { code: "RU", name: "Russian", label: "RU" },
+//   { code: "CN", name: "Chinese", label: "ZH" },
+//   { code: "SG", name: "Singaporean", label: "SG" },
+//   { code: "TR", name: "Turkish", label: "TR" },
+//   { code: "VN", name: "Vietnamese", label: "VN" },
+//   { code: "KR", name: "Korean", label: "KR" },
+//   { code: "LK", name: "Sinhala", label: "SI" },
+//   { code: "NP", name: "Nepali", label: "NE" },
+//   { code: "MY", name: "Malay", label: "MS" },
+//   { code: "BD", name: "Bengali", label: "BN" },
+//   { code: "PH", name: "Filipino", label: "PH" },
+//   { code: "GE", name: "Georgian", label: "KA" },
+//   { code: "UZ", name: "Uzbek", label: "UZ" },
+//   { code: "PL", name: "Polish", label: "PL" },
+// ];
 
-const languages = [
-  { code: "IN", name: "Hindi", label: "HIN" },
-  { code: "GB", name: "English", label: "ENG" },
-  { code: "AE", name: "Arabic", label: "AR" },
-  { code: "TH", name: "Thai", label: "TH" },
-  { code: "FR", name: "French", label: "FR" },
-  { code: "DE", name: "German", label: "DE" },
-  { code: "JP", name: "Japanese", label: "JP" },
-  { code: "IT", name: "Italian", label: "IT" },
-  { code: "RU", name: "Russian", label: "RU" },
-  { code: "CN", name: "Chinese", label: "ZH" },
-  { code: "SG", name: "Singaporean", label: "SG" },
-  { code: "TR", name: "Turkish", label: "TR" },
-  { code: "VN", name: "Vietnamese", label: "VN" },
-  { code: "KR", name: "Korean", label: "KR" },
-  { code: "LK", name: "Sinhala", label: "SI" },
-  { code: "NP", name: "Nepali", label: "NE" },
-  { code: "MY", name: "Malay", label: "MS" },
-  { code: "BD", name: "Bengali", label: "BN" },
-  { code: "PH", name: "Filipino", label: "PH" },
-  { code: "GE", name: "Georgian", label: "KA" },
-  { code: "UZ", name: "Uzbek", label: "UZ" },
-  { code: "PL", name: "Polish", label: "PL" },
-];
-
-const currencies = [
-  { code: "INR", symbol: "₹", name: "Indian Rupee" },
-  { code: "USD", symbol: "$", name: "US Dollar" },
-  { code: "EUR", symbol: "€", name: "Euro" },
-  { code: "AED", symbol: "د.إ", name: "UAE Dirham" },
-  { code: "GBP", symbol: "£", name: "British Pound" },
-  { code: "THB", symbol: "฿", name: "Thai Baht" },
-  { code: "JPY", symbol: "¥", name: "Japanese Yen" },
-  { code: "SGD", symbol: "$", name: "Singapore Dollar" },
-  { code: "CAD", symbol: "$", name: "Canadian Dollar" },
-  { code: "AUD", symbol: "$", name: "Australian Dollar" },
-  { code: "SAR", symbol: "﷼", name: "Saudi Riyal" },
-  { code: "QAR", symbol: "﷼", name: "Qatari Riyal" },
-  { code: "KWD", symbol: "د.ك", name: "Kuwaiti Dinar" },
-  { code: "OMR", symbol: "﷼", name: "Oman Rial" },
-  { code: "MYR", symbol: "RM", name: "Malaysian Ringgit" },
-  { code: "VND", symbol: "₫", name: "Vietnamese Dong" },
-  { code: "KRW", symbol: "₩", name: "South Korean Won" },
-  { code: "RUB", symbol: "₽", name: "Russian Ruble" },
-  { code: "TRY", symbol: "₺", name: "Turkish Lira" },
-  { code: "CNY", symbol: "¥", name: "Chinese Yuan" },
-  { code: "NPR", symbol: "₨", name: "Nepalese Rupee" },
-  { code: "LKR", symbol: "Rs", name: "Sri Lankan Rupee" },
-];
+// const currencies = [
+//   { code: "INR", symbol: "₹", name: "Indian Rupee" },
+//   { code: "USD", symbol: "$", name: "US Dollar" },
+//   { code: "EUR", symbol: "€", name: "Euro" },
+//   { code: "AED", symbol: "د.إ", name: "UAE Dirham" },
+//   { code: "GBP", symbol: "£", name: "British Pound" },
+//   { code: "THB", symbol: "฿", name: "Thai Baht" },
+//   { code: "JPY", symbol: "¥", name: "Japanese Yen" },
+//   { code: "SGD", symbol: "$", name: "Singapore Dollar" },
+//   { code: "CAD", symbol: "$", name: "Canadian Dollar" },
+//   { code: "AUD", symbol: "$", name: "Australian Dollar" },
+//   { code: "SAR", symbol: "﷼", name: "Saudi Riyal" },
+//   { code: "QAR", symbol: "﷼", name: "Qatari Riyal" },
+//   { code: "KWD", symbol: "د.ك", name: "Kuwaiti Dinar" },
+//   { code: "OMR", symbol: "﷼", name: "Oman Rial" },
+//   { code: "MYR", symbol: "RM", name: "Malaysian Ringgit" },
+//   { code: "VND", symbol: "₫", name: "Vietnamese Dong" },
+//   { code: "KRW", symbol: "₩", name: "South Korean Won" },
+//   { code: "RUB", symbol: "₽", name: "Russian Ruble" },
+//   { code: "TRY", symbol: "₺", name: "Turkish Lira" },
+//   { code: "CNY", symbol: "¥", name: "Chinese Yuan" },
+//   { code: "NPR", symbol: "₨", name: "Nepalese Rupee" },
+//   { code: "LKR", symbol: "Rs", name: "Sri Lankan Rupee" },
+// ];
 
 function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [selectedLang, setSelectedLang] = useState(languages[0]);
-  const [selectedCurr, setSelectedCurr] = useState(currencies[0]);
+  // const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // const [selectedLang, setSelectedLang] = useState(languages[0]);
+  // const [selectedCurr, setSelectedCurr] = useState(currencies[0]);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [user, setUser] = useState(null);
+// 2. Navigation handlers
+  // const onSupportClick = () => {
+  //   window.location.href = "/support";
+  // };
 
+  // const onAboutClick = () => {
+  //   window.location.href = "/about";
+  // };
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
@@ -102,6 +109,16 @@ function Header() {
           {/* Right Section Container */}
           <div className="header-right">
             <div className="header-actions">
+              {/* 3. Added New Buttons here */}
+              {/* <button className="header-action-btn" onClick={onSupportClick}>
+                <HelpCircle size={16} />
+                <span>Support</span>
+              </button>
+
+              <button className="header-action-btn" onClick={onAboutClick}>
+                <Info size={16} />
+                <span>About</span>
+              </button> */}
               <button className="home-icon-btn" onClick={onHomeClick}>
                 <Home size={16} className="mobile-home-icon" />
                 <span>Home</span>
@@ -131,9 +148,7 @@ function Header() {
                   Login
                 </button>
               )}
-
-              {/* Language & Currency Dropdown */}
-              <div
+              {/* <div
                 className="lang-dropdown-wrapper"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 onMouseEnter={() => setIsMenuOpen(true)}
@@ -192,7 +207,7 @@ function Header() {
                     </div>
                   </div>
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

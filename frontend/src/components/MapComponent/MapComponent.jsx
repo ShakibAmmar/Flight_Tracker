@@ -26,7 +26,6 @@ const getGlobalAirports = async () => {
     return {};
   }
 };
-
 // In your component:
 let DefaultIcon = L.icon({
   iconUrl: markerIcon,
@@ -274,17 +273,18 @@ const MapComponent = ({ selectedFlight }) => {
         zoomControl={false}
         style={{ height: '100%', width: '100%', background: '#001a33' }}
       >
-        <TileLayer
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-          attribution='&copy; Esri'
-        />
-        <TileLayer
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
-          opacity={0.8}
-        />
+<TileLayer
+  url="https://tiles.openfreemap.org/styles/liberty/{z}/{x}/{y}.png"
+  attribution='&copy; <a href="https://openfreemap.org">OpenFreeMap</a>'
+  maxZoom={20}
+/>
+<TileLayer
+  url="https://tiles.stadiamaps.com/tiles/stamen_toner_labels/{z}/{x}/{y}{r}.png"
+  opacity={0.9}
+/>
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"
-          opacity={0.3}
+          opacity={0.9}
         />
         <RecenterMap position={livePos} />
 

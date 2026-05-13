@@ -8,6 +8,7 @@ import FlightCard from '../components/FlightCard/FlightCard';
 import Footer from '../components/Footer/Footer';
 import MapComponent from '../components/MapComponent/MapComponent';
 import { AlertCircle, RefreshCw } from 'lucide-react';
+import { apiUrl } from '../utils/api';
 
 const FlightSkeleton = () => ( 
   <div className="flight-skeleton-row">
@@ -29,13 +30,14 @@ const fetchFlights = useCallback(async (searchData) => {
   setHasError(false);
   // --- ADDED: Timeout Controller (60 seconds) ---
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 60000);
+  const timeoutId = setTimeout(() => controller.abort(), 80000);
 
   try {
+    const flightNoName = searchData.airline;
     const flightNoInput = searchData.flightNumber.toUpperCase();
 
     // 1. Call your Express backend scraper endpoint
-const response = await fetch(`http://localhost:5000/api/flight-tracker/${flightNoInput}`, {
+const response = await fetch(apiUrl(`/api/flight-tracker/${flightNoInput}`), {
       signal: controller.signal // Link the timeout to this fetch
     });
     clearTimeout(timeoutId);
@@ -47,38 +49,46 @@ const response = await fetch(`http://localhost:5000/api/flight-tracker/${flightN
     if (scrapedData && !scrapedData.error) {
       // 2. Map the Scraper Data to your UI Object Structure
       // This ensures your <FlightCard /> and <MapComponent /> work without changes
-      const liveFlight = {
-        id: Date.now(), // Generate a unique ID for React keys
-        airline: scrapedData.airline.replace(/\d+/g, '').trim().toLowerCase(),
-        flightNumber: flightNoInput,
-        logo: `https://www.google.com/s2/favicons?domain=flightaware.com&sz=64`,
-        status: scrapedData.status,
-        statusSubtext: scrapedData.status.includes("Arrived") ? "Completed" : "Live Updates",
-        departure: { 
-          actual: scrapedData.departure.actual,
-          date: scrapedData.departure.date,
-          time: scrapedData.departure.time, 
-          city: scrapedData.departure.city, 
-          code: scrapedData.departure.cityCode, 
-          location: scrapedData.departure.airport, 
-          terminal: "N/A", 
-          gateTerminal: scrapedData.departure.gateTerminal,
-          gate:scrapedData.departure.gate
+   const liveFlight = {
+  id: Date.now(),
+  // FIX 1: Safely handle missing airline data
+  airline: ( flightNoName.replace(/[0-9]/g, '')).replace(/\d+/g, '').trim().toLowerCase(),
+  flightNumber: flightNoInput,
+  logo: `https://pics.avs.io/200/200/AA.png`,
+  status: scrapedData.status || "Unknown",
+  aircraftType: scrapedData.aircraftType || "N/A",
+  speed: scrapedData.speed || "N/A",
+  altitude: scrapedData.altitude || "N/A",
+  distance: scrapedData.distance || "N/A",
+  statusSubtext: (scrapedData.status || "").includes("Arrived") ? "Completed" : "Live Updates",
 
-        },
-        arrival: { 
-          date: scrapedData.arrival.date,
-          time: scrapedData.arrival.time, 
-          city: scrapedData.arrival.city, 
-          code: scrapedData.arrival.cityCode, 
-          location: scrapedData.arrival.airport, 
-          terminal: scrapedData.arrival.terminal, 
-          gate: scrapedData.arrival.gate 
-        },
-        type: scrapedData.duration || "Boeing/Airbus", // Using duration as a placeholder or meta info
-        price: null // Scraped data doesn't usually include price
-      };
-
+  departure: { 
+    // FIX 2: Safely map departure fields
+    actual: scrapedData.departure?.actual || "N/A",
+    date: scrapedData.departure?.date || "N/A",
+    time: scrapedData.departure?.time || "N/A", 
+    city: scrapedData.departure?.city || "N/A", 
+    code: scrapedData.departure?.cityCode || "N/A", 
+    location: scrapedData.departure?.airport || "N/A", 
+    terminal: "N/A", 
+    gateTerminal: scrapedData.departure?.gateTerminal || "N/A",
+    gate: scrapedData.departure?.gate || "N/A"
+  },
+  
+  arrival: { 
+    // FIX 3: Safely map arrival fields
+    date: scrapedData.arrival?.date || "N/A",
+    time: scrapedData.arrival?.time || "N/A", 
+    city: scrapedData.arrival?.city || "N/A", 
+    code: scrapedData.arrival?.cityCode || "N/A", 
+    location: scrapedData.arrival?.airport || "N/A", 
+    terminal: scrapedData.arrival?.terminal || "N/A", 
+    gate: scrapedData.arrival?.gate || "N/A" 
+  },
+  
+  type: scrapedData.duration || "Boeing/Airbus", 
+  price: null 
+};
       setFlights([liveFlight]);
     } else {
       // If no data found by scraper, set empty list
@@ -154,14 +164,7 @@ const response = await fetch(`http://localhost:5000/api/flight-tracker/${flightN
             </div>
           ) : (
             <>
-             {/* <div className="results-header">
-                <div className="results-col">AIRLINES</div>
-                <div className="results-col">DATE</div>
-                <div className="results-col">DEPARTURE</div>
-                <div className="results-col">DURATION</div>
-                <div className="results-col">ARRIVE</div>
-                <div className="results-col">PRICE</div>
-              </div> */}
+            
 
               <div className="flight-list">
                 {isLoading ? (

@@ -1,12 +1,18 @@
 import { useState, useRef ,useEffect } from 'react';
 import { Star, Plane, User, Clock, Loader2, RefreshCw, MapPin, Armchair, Users, Calendar } from 'lucide-react'; 
 import './FlightCard.css'; 
+// import { airlines } from '../../constants/data';
 import { auth } from "../firebase/firebase";  
-function FlightCard({ flight, searchDate ,setIsLoginOpen = () => {},}) { 
+import { apiUrl } from '../../utils/api';
+function FlightCard({ flight, searchDate, searchData ,airlinesName ,setIsLoginOpen = () => {},}) { 
   const [showDetails, setShowDetails] = useState(true);
   const [showReviews, setShowReviews] = useState(false);
+  const [showAllFlights, setShowAllFlights] = useState(false);
   const [reviewsData, setReviewsData] = useState([]); 
+  const [allFlightsData, setAllFlightsData] = useState([]);
   const [isLoading, setIsLoading] = useState(false); 
+  const [isFlightsLoading, setIsFlightsLoading] = useState(false);
+  const [allFlightsError, setAllFlightsError] = useState('');
   const reviewsTopRef = useRef(null); 
   const [showWriteForm, setShowWriteForm] = useState(false); 
   const [showSuccessToast, setShowSuccessToast] = useState(false); 
@@ -16,6 +22,12 @@ const getStatusClass = (status) => {
     if (status === 'CANCELLED') return 'status-badge-red';
     return 'status-badge-green';
 }; 
+
+const formatFlightName = (value = '') => {
+    return value
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, char => char.toUpperCase());
+};
 
 const handleReviewToggle = () => {
     //  Check if a user is currently signed in via Firebase 
@@ -65,6 +77,7 @@ const [formData, setFormData] = useState({
   user: "",
   rating: "5",
   review: "",
+  airlinesName:"",
   traveller: "Solo Leisure",
   seatType: "Economy Class",
   route: "",
@@ -141,7 +154,7 @@ useEffect(() => {
     setIsLoading(true); 
     try { 
       const airlineSlug = flight.airline.toLowerCase().trim().replace(/\s+/g, '-');
-      const url = `http://localhost:5000/api/reviews/${airlineSlug}${forceRefresh ? '?refresh=true' : ''}`;
+      const url = apiUrl(`/api/reviews/${airlineSlug}${forceRefresh ? '?refresh=true' : ''}`);
       const response = await fetch(url);
       if (response.status === 202) {
         setTimeout(() => fetchLiveReviews(retryCount + 1, forceRefresh), 4000);
@@ -173,6 +186,7 @@ useEffect(() => {
       setCurrentPage(1); // Reset to first page on new fetch
       setShowReviews(true);
       setShowDetails(false);
+      setShowAllFlights(false);
     } catch (error) {
       console.error("Error fetching reviews:", error);
     } finally {
@@ -183,11 +197,53 @@ useEffect(() => {
     if (section === 'details') {
       setShowDetails(!showDetails);
       setShowReviews(false);
+      setShowAllFlights(false);
     } else {
       if (showReviews) setShowReviews(false);
       else fetchLiveReviews(0, false); 
+      setShowAllFlights(false);
     }
   }; 
+
+  const fetchAllFlights = async () => {
+    setIsFlightsLoading(true);
+    setAllFlightsError('');
+
+    try {
+      const response = await fetch(apiUrl('/api/flights/summary'));
+      if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+      const data = await response.json();
+      setAllFlightsData(Array.isArray(data) ? data : []);
+      setShowAllFlights(true);
+      setShowDetails(false);
+      setShowReviews(false);
+    } catch (error) {
+      console.error("Error fetching all flights:", error);
+      setAllFlightsError('Unable to load flights right now.');
+      setShowAllFlights(true);
+      setShowDetails(false);
+      setShowReviews(false);
+    } finally {
+      setIsFlightsLoading(false);
+    }
+  };
+
+  const handleAllFlightsToggle = () => {
+    if (showAllFlights) {
+      setShowAllFlights(false);
+      return;
+    }
+
+    if (allFlightsData.length > 0) {
+      setShowAllFlights(true);
+      setShowDetails(false);
+      setShowReviews(false);
+      return;
+    }
+
+    fetchAllFlights();
+  };
 
   // Pagination Logic
   const indexOfLastReview = currentPage * reviewsPerPage;
@@ -198,7 +254,7 @@ useEffect(() => {
     e.preventDefault(); 
     
     try {
-        const response = await fetch('http://localhost:5000/api/reviews/submit', { 
+        const response = await fetch(apiUrl('/api/reviews/submit'), { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData), 
@@ -276,24 +332,130 @@ useEffect(() => {
     `User Reviews ${showReviews ? '▲' : '▼'}`
   )}
 </button>
+            <button
+              className={`toggle-btn ${showAllFlights ? 'active' : ''} ${isFlightsLoading ? 'loading' : ''}`}
+              onClick={handleAllFlightsToggle}
+              disabled={isFlightsLoading}
+            >
+              {isFlightsLoading ? (
+                <><Loader2 className="spinner-icon" size={16} /> Loading...</>
+              ) : (
+                `All Flights ${showAllFlights ? 'â–²' : 'â–¼'}`
+              )}
+            </button>
         </div>
         <div className="price-section">
             <span className="price-text">₹ {flight.price?.toLocaleString()}</span>
-            <button className="book-btn">BOOK NOW</button>
+            <button
+  className="book-btn"
+  onClick={() =>
+    window.open(
+      "https://www.makemytrip.com/flights/?cmp=SEM|D|DF|B|Brand|Brand-BrandExact_DT|B_M_Makemytrip_Search_Exact|Brand_Top_5_Exact|RSA|&ef_id=:G:s&msclkid=a9935e6d1eb01f7012d2370a60c6b1a2",
+      "_blank"
+    )
+  }
+>
+  BOOK NOW
+</button>
         </div>
       </div>
 
-      {showDetails && (
+{showAllFlights && (
+  <div className="all-flights-panel">
+    <div className="all-flights-header">
+      <div>
+        <h3>All Reviewed Flights</h3>
+        <p>Best Average Rated Flights</p>
+      </div>
+      <button className="refresh-sync-btn" onClick={fetchAllFlights} disabled={isFlightsLoading}>
+        <RefreshCw size={14} className={isFlightsLoading ? 'spin' : ''} />
+        {isFlightsLoading ? 'Updating...' : 'Refresh'}
+      </button>
+    </div>
+
+    {allFlightsError ? (
+      <p className="all-flights-error">{allFlightsError}</p>
+    ) : allFlightsData.length > 0 ? (
+      <div className="all-flights-grid">
+        {allFlightsData.map((item) => (
+          <div key={item.airline} className="all-flight-card">
+            <div>
+              <span className="all-flight-label">Flight</span>
+              <h4>{formatFlightName(item.name || item.airline)}</h4>
+            </div>
+
+            <div className="all-flight-rating">
+              <Star size={16} fill="#ffb400" color="#ffb400" />
+              <strong>{item.averageRating || 'N/A'}</strong>
+              <span>({item.totalReviews || 0} reviews)</span>
+            </div>
+
+            <div className="all-flight-route">
+              <span className="all-flight-label">Route</span>
+              <p>{item.route || 'N/A'}</p>
+            </div>
+
+            <div className="all-flight-meta-grid">
+              <div>
+                <span className="all-flight-label">User</span>
+                <p>{item.user || 'N/A'}</p>
+              </div>
+              <div>
+                <span className="all-flight-label">Best Rating</span>
+                <p>{item.bestRating || 'N/A'}</p>
+              </div>
+              <div>
+                <span className="all-flight-label">Traveller</span>
+                <p>{item.traveller || 'N/A'}</p>
+              </div>
+              <div>
+                <span className="all-flight-label">Seat Type</span>
+                <p>{item.seatType || 'N/A'}</p>
+              </div>
+              <div>
+                <span className="all-flight-label">Seat Comfort</span>
+                <p>{item.seatComfort || 'N/A'}</p>
+              </div>
+              <div>
+                <span className="all-flight-label">Value Money</span>
+                <p>{item.valueMoney || 'N/A'}</p>
+              </div>
+            </div>
+
+            <button
+              className="all-flight-book-btn"
+              onClick={() =>
+                window.open(
+                  "https://www.makemytrip.com/flights/?cmp=SEM|D|DF|B|Brand|Brand-BrandExact_DT|B_M_Makemytrip_Search_Exact|Brand_Top_5_Exact|RSA|&ef_id=:G:s&msclkid=a9935e6d1eb01f7012d2370a60c6b1a2",
+                  "_blank"
+                )
+              }
+            >
+              Book
+            </button>
+          </div>
+        ))}
+      </div>
+    ) : (
+      <p className="no-reviews">No reviewed flights found in MongoDB yet.</p>
+    )}
+  </div>
+)}
+
+{showDetails && (
   <div className="tracker-details-panel">
     <div className="details-sub-header">
-       <span>{flight.type}</span> — <span>{flight.duration}</span>
+      {/* We use flight.type which you've set to scrapedData.duration */}
+      <span>Duration: {flight.type}</span> 
+      <span>Status: {flight.status}</span>
     </div>
+    
     <div className="tracker-grid">
-     
+      {/* Departure Box */}
       <div className="tracker-box">
         <div className="airport-header">
           {flight.departure.city} <br/>
-          <small>Departure Airport : {flight.departure.location}</small>
+          <small>Departure Airport: {flight.departure.location}</small>
         </div>
         <div className="section-title">Flight Departure Times</div>
         <div className="date-label">{flight.departure.date}</div>
@@ -302,16 +464,16 @@ useEffect(() => {
             <span className="label">Scheduled</span>
             <span className="value">{flight.departure.time}</span>
           </div>
-          {/* <div className="time-type">
+          <div className="time-type">
             <span className="label">Actual</span>
-            <span className="value bold">{flight.departure.actual}</span>
-          </div> */}
+            <span className="value bold">{flight.departure.actual || '--:--'}</span>
+          </div>
         </div>
       
         <div className="info-footer">
           <div className="info-item">
             <span className="label">Terminal</span>
-            <span className="value">{flight.departure.gateTerminal|| 'N/A'}</span>
+            <span className="value">{flight.departure.gateTerminal || 'N/A'}</span>
           </div>
           <div className="info-item">
             <span className="label">Gate</span>
@@ -320,11 +482,11 @@ useEffect(() => {
         </div>
       </div>
 
+      {/* Arrival Box */}
       <div className="tracker-box">
-
         <div className="airport-header">
           {flight.arrival.city}<br/>
-          <small>Arrival Airport : {flight.arrival.location}</small>
+          <small>Arrival Airport: {flight.arrival.location}</small>
         </div>
         <div className="section-title">Flight Arrival Times</div>
         <div className="date-label">{flight.arrival.date}</div>
@@ -333,10 +495,6 @@ useEffect(() => {
             <span className="label">Scheduled</span>
             <span className="value">{flight.arrival.time}</span>
           </div>
-          {/* <div className="time-type">
-            <span className="label">Actual</span>
-            <span className="value bold">{flight.arrival.actualTime || flight.arrival.time}</span>
-          </div> */}
         </div>
         <div className="info-footer">
           <div className="info-item">
@@ -346,6 +504,46 @@ useEffect(() => {
           <div className="info-item">
             <span className="label">Gate</span>
             <span className="value">{flight.arrival.gate || 'N/A'}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* NEW: Live Aircraft Data Box */}
+      <div className="tracker-box live-data-box">
+        <div className="airport-header">
+          Aircraft Details
+          <br/><small>Live Telemetry</small>
+        </div>
+        <div className="section-title">Flight Performance</div>
+        
+        <div className="telemetry-grid" style={{ marginTop: '10px' }}>
+          <div className="info-item" style={{ marginBottom: '10px' }}>
+            <span className="label">Aircraft Type</span>
+            <span className="value" style={{ display: 'block', fontWeight: '600' }}>
+              {flight.aircraftType || 'N/A'}
+            </span>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+            <div className="info-item">
+              <span className="label">Speed</span>
+              <span className="value" style={{ display: 'block', color: '#22c55e', fontWeight: 'bold' }}>
+                {flight.speed || '0 mph'}
+              </span>
+            </div>
+            <div className="info-item">
+              <span className="label">Altitude</span>
+              <span className="value" style={{ display: 'block', color: '#3b82f6', fontWeight: 'bold' }}>
+                {flight.altitude || '0 ft'}
+              </span>
+            </div>
+          </div>
+
+          <div className="info-item" style={{ marginTop: '10px' }}>
+            <span className="label">Distance Covered</span>
+            <span className="value" style={{ display: 'block' }}>
+              {flight.distance || 'N/A'}
+            </span>
           </div>
         </div>
       </div>
@@ -469,7 +667,7 @@ useEffect(() => {
                 
                     <div className="review-rating-pills">
                       <div className="rating-pill">
-                        Aircraft :<span className="star-rating">{rev.aircraftNumber}</span>
+                        Aircraft :<span className="star-rating">{rev.aircraftNumber || rev.airlinesName }</span>
                       </div>
                          <div className="rating-pill">
                             Seat Comfort : <span className="star-rating">{renderStars(rev.seatComfort)}</span>
@@ -563,6 +761,10 @@ useEffect(() => {
           <div className="input-group">
             <label>Name</label>
             <input type="text" placeholder="e.g. Enter Name" value={formData.user} onChange={(e) => setFormData({...formData, user: e.target.value})} required />
+          </div>
+          <div className="input-group">
+            <label>Airline</label>
+            <input type="text" placeholder="e.g. Enter Airline Number" value={formData.airlinesName} onChange={(e) => setFormData({...formData, airlinesName: e.target.value})} required />
           </div>
           <div className="input-group">
             <label>Route</label>

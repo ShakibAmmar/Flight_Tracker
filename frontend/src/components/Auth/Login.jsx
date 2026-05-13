@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Mail, Lock, User, Eye, EyeOff, ArrowLeft, X } from 'lucide-react';
 import { auth } from '../firebase/firebase'; // Added Firebase import // Added Firebase Auth method
 import './Login.css';
+import { apiUrl } from '../../utils/api';
 import { 
   sendPasswordResetEmail, 
   createUserWithEmailAndPassword, 
@@ -62,7 +63,7 @@ const handleSubmit = async (e) => {
       try {
         await createUserWithEmailAndPassword(auth, formData.email, formData.password);
 
-        const signupResponse = await fetch('http://localhost:5000/api/auth/signup', {
+        const signupResponse = await fetch(apiUrl('/api/auth/signup'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData),
@@ -90,7 +91,7 @@ const handleSubmit = async (e) => {
       await signInWithEmailAndPassword(auth, formData.email, formData.password);
 
       // If Firebase succeeds, proceed to log in to your local backend
-      const loginResponse = await fetch('http://localhost:5000/api/auth/login', {
+      const loginResponse = await fetch(apiUrl('/api/auth/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

@@ -63,12 +63,13 @@
 .foresight-image-card img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    background: #eef3f8;
     transition: transform 0.3s ease;
 }
 
 .foresight-image-card:hover img {
-    transform: scale(1.05); /* Subtle zoom on hover */
+    transform: scale(1.02);
 }
 
 /* Links Section */

@@ -116,9 +116,15 @@ try {
 
 const searchInput = page.locator('[data-testid="search"] .pointer-events-auto input');
 await searchInput.waitFor({ state: 'visible', timeout: 25000 });
-await searchInput.click();
-await searchInput.fill('');
-await searchInput.type(flightNumber, { delay: 150 });
+await searchInput.evaluate((input, value) => {
+    input.scrollIntoView({ block: 'center', inline: 'center' });
+    input.focus();
+    input.value = '';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.value = value;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+}, flightNumber);
 await page.waitForTimeout(2000);
 
         console.log("Waiting for flight suggestions (ignoring default airports)...");
@@ -126,7 +132,12 @@ await page.waitForTimeout(2000);
         const resultItemSelector = 'li[data-testid="search-result"]';
         const flightSpecificResult = page.locator(resultItemSelector).filter({ hasText: /\d/ });
 
-        await flightSpecificResult.first().waitFor({ state: 'visible', timeout: 70000 });
+        try {
+            await flightSpecificResult.first().waitFor({ state: 'visible', timeout: 10000 });
+        } catch {
+            await searchInput.press('Enter');
+            await flightSpecificResult.first().waitFor({ state: 'visible', timeout: 60000 });
+        }
 
         console.log(` Clicking mapped flight...`);
         
